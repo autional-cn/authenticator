@@ -1,0 +1,79 @@
+import { useTranslation } from 'react-i18next';
+import { Lock, Check, AlertCircle } from 'lucide-react';
+
+export default function SettingsPinProtection({
+	hasPin,
+	pinInput,
+	onPinChange,
+	pinSaving,
+	pinMessage,
+	onSave,
+}: {
+	hasPin: boolean;
+	pinInput: string;
+	onPinChange: (v: string) => void;
+	pinSaving: boolean;
+	pinMessage: { type: 'success' | 'error'; text: string } | null;
+	onSave: (e?: React.FormEvent) => void;
+}) {
+	const { t } = useTranslation();
+
+	return (
+		<div className="px-4 py-3">
+			<div className="flex items-center gap-3 mb-2">
+				<Lock className="h-4 w-4 text-neutral-400" />
+				<span className="text-sm text-neutral-0">{t('settings.pin')}</span>
+				{hasPin && (
+					<span className="ml-auto rounded-full bg-success/10 px-2 py-0.5 text-[10px] font-medium text-success">
+						{t('settings.pinEnabled')}
+					</span>
+				)}
+			</div>
+			<p className="text-[11px] text-neutral-500 mb-2">
+				{hasPin ? t('settings.pinDescEnabled') : t('settings.pinDescDisabled')}
+			</p>
+			{pinMessage && (
+				<div
+					className={`mb-2 flex items-center gap-1.5 rounded-lg px-3 py-2 text-xs ${pinMessage.type === 'success' ? 'bg-success/10 text-success' : 'bg-danger/10 text-danger'}`}
+				>
+					{pinMessage.type === 'success' ? (
+						<Check className="h-3.5 w-3.5 shrink-0" />
+					) : (
+						<AlertCircle className="h-3.5 w-3.5 shrink-0" />
+					)}
+					{pinMessage.text}
+				</div>
+			)}
+			<form onSubmit={onSave} className="flex gap-2">
+				<div className="flex-1">
+					<label
+						htmlFor="settings-pin-input"
+						className="mb-1 block text-xs font-medium text-neutral-400"
+					>
+						{t('settings.pin')}
+					</label>
+					<input
+						id="settings-pin-input"
+						name="pin"
+						type="password"
+						inputMode="numeric"
+						pattern="[0-9]*"
+						maxLength={8}
+						value={pinInput}
+						onChange={(e) => onPinChange(e.target.value.replace(/\D/g, ''))}
+						placeholder={hasPin ? t('settings.pinPlaceholder') : t('settings.pinDisableHint')}
+						autoComplete={hasPin ? 'current-password' : 'new-password'}
+						className="w-full rounded-lg border border-auth-border bg-auth-elevated px-3 py-2 text-sm font-mono text-neutral-0 placeholder-neutral-600 outline-none focus:border-primary-500"
+					/>
+				</div>
+				<button
+					type="submit"
+					disabled={pinSaving}
+					className="mt-auto rounded-lg bg-primary-600 px-4 text-sm font-medium text-white hover:bg-primary-500 transition-colors disabled:opacity-50"
+				>
+					{pinSaving ? t('settings.pinSaving') : t('settings.pinSave')}
+				</button>
+			</form>
+		</div>
+	);
+}

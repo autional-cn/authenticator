@@ -1,0 +1,186 @@
+/**
+ * Push MFA Approval Page
+ *
+ * Triggered by Service Worker notificationclick or directly opened.
+ * Displays the push challenge details and allows approve/deny.
+ */
+
+import { useEffect, useState } from 'react';
+import { useSearchParams } from 'react-router';
+import { ShieldCheck, ShieldX, AlertTriangle } from 'lucide-react';
+import {
+	approvePushChallenge,
+	denyPushChallenge,
+	getPushChallengeStatus,
+	type PushChallengeStatus,
+} from '../../lib/push';
+import { extractApiErrorMessage } from '@autional-cn/shared';
+
+export default function PushApprovePage() {
+	const [searchParams] = useSearchParams();
+	const challengeId = searchParams.get('challengeId') || '';
+	const urlNumberMatching = searchParams.get('numberMatching') || '';
+
+	const [challenge, setChallenge] = useState<PushChallengeStatus | null>(null);
+	const [loading, setLoading] = useState(true);
+	const [error, setError] = useState<string | null>(null);
+	const [actionLoading, setActionLoading] = useState(false);
+	const [result, setResult] = useState<'approved' | 'denied' | null>(null);
+
+	useEffect(() => {
+		if (!challengeId) {
+			setError('No challenge ID provided');
+			setLoading(false);
+			return;
+		}
+
+		getPushChallengeStatus(challengeId)
+			.then((data) => {
+				setChallenge(data);
+				if (data.status !== 'pending') {
+					setResult(data.status === 'approved' ? 'approved' : 'denied');
+				}
+			})
+			.catch((err) => {
+				setError(err?.message || 'Failed to load challenge');
+			})
+			.finally(() => setLoading(false));
+	}, [challengeId]);
+
+	const handleApprove = async () => {
+		if (!challengeId) return;
+		setActionLoading(true);
+		try {
+			await approvePushChallenge(challengeId, urlNumberMatching);
+			setResult('approved');
+		} catch (err: unknown) {
+			setError(extractApiErrorMessage(err, 'Approval failed'));
+		} finally {
+			setActionLoading(false);
+		}
+	};
+
+	const handleDeny = async () => {
+		if (!challengeId) return;
+		setActionLoading(true);
+		try {
+			await denyPushChallenge(challengeId, urlNumberMatching);
+			setResult('denied');
+		} catch (err: unknown) {
+			setError(extractApiErrorMessage(err, 'Denial failed'));
+		} finally {
+			setActionLoading(false);
+		}
+	};
+
+	if (loading) {
+		return (
+			<div className="flex min-h-screen items-center justify-center bg-gray-50 dark:bg-auth-bg">
+				<div className="text-center">
+					<div className="mx-auto mb-4 h-8 w-8 animate-spin rounded-full border-2 border-gray-300 border-t-blue-600 dark:border-neutral-700 dark:border-t-primary-500" />
+					<p className="text-gray-600 dark:text-neutral-400">Loading challenge...</p>
+				</div>
+			</div>
+		);
+	}
+
+	if (error && !challenge) {
+		return (
+			<div className="flex min-h-screen items-center justify-center bg-gray-50 dark:bg-auth-bg p-4">
+				<div className="w-full max-w-sm rounded-xl bg-white dark:bg-auth-surface p-6 shadow-lg">
+					<div className="mb-4 flex justify-center">
+						<AlertTriangle className="h-12 w-12 text-red-500" />
+					</div>
+					<h1 className="mb-2 text-center text-xl font-semibold text-gray-900 dark:text-neutral-0">
+						Error
+					</h1>
+					<p className="text-center text-gray-600 dark:text-neutral-400">{error}</p>
+				</div>
+			</div>
+		);
+	}
+
+	if (result) {
+		const isApproved = result === 'approved';
+		return (
+			<div className="flex min-h-screen items-center justify-center bg-gray-50 dark:bg-auth-bg p-4">
+				<div className="w-full max-w-sm rounded-xl bg-white dark:bg-auth-surface p-6 shadow-lg">
+					<div className="mb-4 flex justify-center">
+						{isApproved ? (
+							<ShieldCheck className="h-16 w-16 text-green-500" />
+						) : (
+							<ShieldX className="h-16 w-16 text-red-500" />
+						)}
+					</div>
+					<h1 className="mb-2 text-center text-xl font-semibold text-gray-900 dark:text-neutral-0">
+						{isApproved ? 'Login Approved' : 'Login Denied'}
+					</h1>
+					<p className="text-center text-gray-600 dark:text-neutral-400">
+						{isApproved
+							? 'You have successfully approved the login request.'
+							: 'You have denied the login request.'}
+					</p>
+				</div>
+			</div>
+		);
+	}
+
+	return (
+		<div className="flex min-h-screen items-center justify-center bg-gray-50 dark:bg-auth-bg p-4">
+			<div className="w-full max-w-sm rounded-xl bg-white dark:bg-auth-surface p-6 shadow-lg">
+				<div className="mb-4 flex justify-center">
+					<div className="flex h-16 w-16 items-center justify-center rounded-full bg-blue-100 dark:bg-primary-500/10">
+						<ShieldCheck className="h-8 w-8 text-blue-600 dark:text-primary-400" />
+					</div>
+				</div>
+
+				<h1 className="mb-2 text-center text-xl font-semibold text-gray-900 dark:text-neutral-0">
+					Login Approval Request
+				</h1>
+
+				{challenge?.loginContext && (
+					<p className="mb-4 text-center text-sm text-gray-600 dark:text-neutral-400">
+						Context: {challenge.loginContext}
+					</p>
+				)}
+
+				{urlNumberMatching && (
+					<div className="mb-6 rounded-lg bg-gray-100 dark:bg-auth-elevated p-4 text-center">
+						<p className="text-xs uppercase tracking-wide text-gray-500 dark:text-neutral-500">
+							Verification Number
+						</p>
+						<p className="mt-1 text-4xl font-bold text-gray-900 dark:text-neutral-0">
+							{urlNumberMatching}
+						</p>
+						<p className="mt-1 text-xs text-gray-500 dark:text-neutral-500">
+							Confirm this number matches the login screen
+						</p>
+					</div>
+				)}
+
+				{error && (
+					<div className="mb-4 rounded-lg bg-red-50 dark:bg-danger/10 p-3 text-sm text-red-700 dark:text-danger">
+						{error}
+					</div>
+				)}
+
+				<div className="flex gap-3">
+					<button
+						onClick={handleDeny}
+						disabled={actionLoading}
+						className="flex-1 rounded-lg border border-gray-300 dark:border-auth-border bg-white dark:bg-auth-elevated px-4 py-3 font-medium text-gray-700 dark:text-neutral-300 transition hover:bg-gray-50 dark:hover:bg-auth-border disabled:opacity-50"
+					>
+						{actionLoading ? '...' : 'Deny'}
+					</button>
+					<button
+						onClick={handleApprove}
+						disabled={actionLoading}
+						className="flex-1 rounded-lg bg-blue-600 dark:bg-primary-600 px-4 py-3 font-medium text-white transition hover:bg-blue-700 dark:hover:bg-primary-500 disabled:opacity-50"
+					>
+						{actionLoading ? '...' : 'Approve'}
+					</button>
+				</div>
+			</div>
+		</div>
+	);
+}

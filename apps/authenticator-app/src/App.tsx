@@ -1,0 +1,180 @@
+import { lazy, Suspense } from 'react';
+import { Routes, Route, Outlet, useParams } from 'react-router';
+import { useTranslation } from 'react-i18next';
+import {
+	RequireAuth,
+	OAuthCallbackPage,
+	TenantSlugProvider,
+	TenantIndexGuard,
+} from '@autional-cn/shared';
+import ErrorBoundary from './components/ErrorBoundary';
+import UnlockGate from './components/UnlockScreen';
+import { ToastProvider, LoadingScreen } from '@autional-cn/ui';
+import PwaInstallPrompt from './components/PwaInstallPrompt';
+
+import HomePage from './app/page';
+
+const AddAccountPage = lazy(() => import('./app/add/page'));
+const SettingsPage = lazy(() => import('./app/settings/page'));
+const AccountDetailPage = lazy(() => import('./app/account/page'));
+const PushApprovePage = lazy(() => import('./app/push-approve/page'));
+const ActivityPage = lazy(() => import('./app/activity/page'));
+const DevicesPage = lazy(() => import('./app/devices/page'));
+const CloudBackupPage = lazy(() => import('./app/cloud-backup/page'));
+const DeviceSyncPage = lazy(() => import('./app/device-sync/page'));
+const LoginApprovePage = lazy(() => import('./app/login-approve/page'));
+const NotificationsPage = lazy(() => import('./app/notifications/page'));
+const NotFoundPage = lazy(() => import('./app/not-found/page'));
+
+/** 404 页渲染（lazy 需 Suspense 边界；404 模块极小，fallback null 无闪烁） */
+function NotFoundRoute() {
+	return (
+		<Suspense fallback={null}>
+			<NotFoundPage />
+		</Suspense>
+	);
+}
+
+function LayoutWrapper() {
+	const { tenantSlug } = useParams();
+	return (
+		<TenantSlugProvider value={tenantSlug}>
+			<Outlet />
+		</TenantSlugProvider>
+	);
+}
+
+export default function App() {
+	const { t } = useTranslation();
+	return (
+		<ToastProvider>
+			<ErrorBoundary>
+				<UnlockGate>
+					<a
+						href="#main-content"
+						className="sr-only focus:not-sr-only focus:fixed focus:top-4 focus:left-4 focus:z-[200] focus:rounded-xl focus:bg-primary-600 focus:px-4 focus:py-2 focus:text-sm focus:font-medium focus:text-white focus:no-underline"
+					>
+						{t('common.skipToContent')}
+					</a>
+					<PwaInstallPrompt />
+					<div className="mx-auto flex h-screen max-w-md flex-col bg-auth-bg">
+						<main id="main-content" className="flex-1 overflow-y-auto pb-28">
+							<Routes>
+								<Route path="/oauth/callback" element={<OAuthCallbackPage />} />
+
+								<Route
+									path="/:tenantSlug"
+									element={
+										<RequireAuth>
+											<LayoutWrapper />
+										</RequireAuth>
+									}
+								>
+									{appRoutes(t)}
+								</Route>
+
+								<Route path="*" element={<NotFoundRoute />} />
+							</Routes>
+						</main>
+					</div>
+				</UnlockGate>
+			</ErrorBoundary>
+		</ToastProvider>
+	);
+}
+
+function appRoutes(t: (key: string) => string) {
+	return (
+		<>
+			<Route
+				index
+				element={
+					<TenantIndexGuard notFound={<NotFoundRoute />}>
+						<HomePage />
+					</TenantIndexGuard>
+				}
+			/>
+			<Route
+				path="add"
+				element={
+					<Suspense fallback={<LoadingScreen message={t('common.loading')} />}>
+						<AddAccountPage />
+					</Suspense>
+				}
+			/>
+			<Route
+				path="settings"
+				element={
+					<Suspense fallback={<LoadingScreen message={t('common.loading')} />}>
+						<SettingsPage />
+					</Suspense>
+				}
+			/>
+			<Route
+				path="account"
+				element={
+					<Suspense fallback={<LoadingScreen message={t('common.loading')} />}>
+						<AccountDetailPage />
+					</Suspense>
+				}
+			/>
+			<Route
+				path="notification/api/v1/push-approve"
+				element={
+					<Suspense fallback={<LoadingScreen message={t('common.loading')} />}>
+						<PushApprovePage />
+					</Suspense>
+				}
+			/>
+			<Route
+				path="activity"
+				element={
+					<Suspense fallback={<LoadingScreen message={t('common.loading')} />}>
+						<ActivityPage />
+					</Suspense>
+				}
+			/>
+			<Route
+				path="devices"
+				element={
+					<Suspense fallback={<LoadingScreen message={t('common.loading')} />}>
+						<DevicesPage />
+					</Suspense>
+				}
+			/>
+			<Route
+				path="cloud-backup"
+				element={
+					<Suspense fallback={<LoadingScreen message={t('common.loading')} />}>
+						<CloudBackupPage />
+					</Suspense>
+				}
+			/>
+			<Route
+				path="device-sync"
+				element={
+					<Suspense fallback={<LoadingScreen message={t('common.loading')} />}>
+						<DeviceSyncPage />
+					</Suspense>
+				}
+			/>
+			<Route
+				path="login-approve"
+				element={
+					<Suspense fallback={<LoadingScreen message={t('common.loading')} />}>
+						<LoginApprovePage />
+					</Suspense>
+				}
+			/>
+			<Route
+				path="notification/api/v1/notifications"
+				element={
+					<Suspense fallback={<LoadingScreen message={t('common.loading')} />}>
+						<NotificationsPage />
+					</Suspense>
+				}
+			/>
+			<Route path="*" element={<NotFoundRoute />} />
+		</>
+	);
+}

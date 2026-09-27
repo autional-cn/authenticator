@@ -1,0 +1,39 @@
+@import '@autional-cn/tailwind-preset/tokens.css';
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  html {
+    font-family: var(--font-sans);
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    background-color: var(--color-bg-primary);
+  }
+  body {
+    background-color: var(--color-bg-primary);
+    color: var(--color-text-primary);
+    overscroll-behavior-y: none;
+    -webkit-tap-highlight-color: transparent;
+  }
+}
+
+/* Custom scrollbar for dark theme */
+::-webkit-scrollbar {
+  width: 4px;
+}
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+::-webkit-scrollbar-thumb {
+  background: var(--color-border);
+  border-radius: 2px;
+}
+
+/* TOTP code selection */
+.totp-code {
+  font-variant-numeric: tabular-nums;
+  letter-spacing: 0.15em;
+  user-select: all;
+}

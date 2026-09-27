@@ -1,0 +1,210 @@
+import { useState } from 'react';
+import { useNavigate } from 'react-router';
+import { useTranslation } from 'react-i18next';
+import {
+	ArrowLeft,
+	Smartphone,
+	RefreshCw,
+	Shield,
+	AlertCircle,
+	Check,
+	Wifi,
+	Clock,
+} from 'lucide-react';
+import { useAuthenticatorStore } from '@/lib/store';
+import { useDeviceSyncList, useSyncDevice } from '@/hooks/use-cloud-backup';
+import { showToast } from '@autional-cn/ui';
+import BottomNav from '@/components/BottomNav';
+import { toSlugged, useTenantSlug } from '../../lib/slug';
+
+export default function DeviceSyncPage() {
+	const { t } = useTranslation();
+	const navigate = useNavigate();
+	const slug = useTenantSlug();
+	const { accounts } = useAuthenticatorStore();
+	const { devices, loading, error, refetch } = useDeviceSyncList();
+	const { sync, syncing, error: syncError } = useSyncDevice();
+	const [syncSuccess, setSyncSuccess] = useState(false);
+
+	const handleSync = async () => {
+		if (accounts.length === 0) {
+			showToast(t('home.noAccounts'), 'error');
+			return;
+		}
+		setSyncSuccess(false);
+		try {
+			const deviceName = getDeviceName(t('deviceSync.unknownDevice'));
+			await sync(deviceName, accounts);
+			setSyncSuccess(true);
+			showToast(t('deviceSync.success'), 'success');
+			refetch();
+			setTimeout(() => setSyncSuccess(false), 3000);
+		} catch {
+			showToast(syncError || t('settings.pushFailed'), 'error');
+		}
+	};
+
+	const formatDate = (iso?: string) => {
+		if (!iso) return t('cloudBackup.unknown');
+		try {
+			return new Date(iso).toLocaleString('zh-CN');
+		} catch {
+			return iso;
+		}
+	};
+
+	const truncateFingerprint = (fp?: string) => {
+		if (!fp) return '—';
+		if (fp.length <= 12) return fp;
+		return `${fp.slice(0, 6)}...${fp.slice(-6)}`;
+	};
+
+	const displayError = error || syncError;
+
+	return (
+		<div className="flex h-full flex-col">
+			<header className="sticky top-0 z-10 flex items-center gap-3 border-b border-auth-border bg-auth-bg/80 px-4 py-3 backdrop-blur-md">
+				<button
+					onClick={() => navigate(toSlugged('/settings', slug))}
+					className="rounded-lg p-1.5 text-neutral-400 hover:bg-auth-elevated hover:text-neutral-0 transition-colors"
+					aria-label={t('common.back')}
+				>
+					<ArrowLeft className="h-5 w-5" />
+				</button>
+				<h1 className="text-lg font-bold text-neutral-0">{t('deviceSync.title')}</h1>
+			</header>
+
+			<div className="flex-1 space-y-4 px-4 py-4">
+				{displayError && (
+					<div className="flex items-center gap-2 rounded-lg bg-danger/10 px-3 py-2.5 text-sm text-danger">
+						<AlertCircle className="h-4 w-4 shrink-0" />
+						{displayError}
+					</div>
+				)}
+
+				{syncSuccess && (
+					<div className="flex items-center gap-2 rounded-lg bg-success/10 px-3 py-2.5 text-sm text-success">
+						<Check className="h-4 w-4 shrink-0" />
+						{t('deviceSync.success')}
+					</div>
+				)}
+
+				<section>
+					<h2 className="mb-2 text-xs font-semibold uppercase tracking-wider text-neutral-500">
+						{t('deviceSync.list')}
+					</h2>
+					<div className="rounded-xl border border-auth-border bg-auth-surface">
+						{loading ? (
+							<div className="flex items-center justify-center py-12">
+								<div className="h-6 w-6 animate-spin rounded-full border-2 border-primary-500 border-t-transparent" />
+							</div>
+						) : devices.length === 0 ? (
+							<div className="flex flex-col items-center justify-center py-12 text-center px-4">
+								<Smartphone className="h-10 w-10 text-neutral-600 mb-3" />
+								<p className="text-sm text-neutral-400">{t('deviceSync.noDevices')}</p>
+								<p className="mt-1 text-xs text-neutral-600">{t('deviceSync.noDevicesHint')}</p>
+							</div>
+						) : (
+							<div className="divide-y divide-auth-border">
+								{devices.map((device, i) => (
+									<div key={device.id || i} className="flex items-center gap-3 px-4 py-3">
+										<div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-primary-500/10">
+											<Smartphone className="h-5 w-5 text-primary-400" />
+										</div>
+										<div className="min-w-0 flex-1">
+											<p className="text-sm font-medium text-neutral-0 truncate">
+												{device.deviceName || t('deviceSync.unnamedDevice')}
+											</p>
+											<div className="flex items-center gap-2 mt-0.5">
+												<span
+													className="text-[10px] font-mono text-neutral-500"
+													title={device.deviceFingerprint}
+												>
+													{truncateFingerprint(device.deviceFingerprint)}
+												</span>
+											</div>
+											<div className="flex items-center gap-1 mt-0.5">
+												<Clock className="h-3 w-3 text-neutral-600" />
+												<span className="text-[10px] text-neutral-500">
+													{formatDate(device.lastSyncAt)}
+												</span>
+												{device.accountCount != null && (
+													<span className="text-[10px] text-neutral-600">
+														· {t('settings.accountsCountLabel', { n: device.accountCount })}
+													</span>
+												)}
+											</div>
+										</div>
+										<div
+											className="flex h-2 w-2 shrink-0 rounded-full bg-success"
+											title={t('deviceSync.synced')}
+										/>
+									</div>
+								))}
+							</div>
+						)}
+					</div>
+				</section>
+
+				<section>
+					<h2 className="mb-2 text-xs font-semibold uppercase tracking-wider text-neutral-500">
+						{t('deviceSync.actions')}
+					</h2>
+					<div className="rounded-xl border border-auth-border bg-auth-surface divide-y divide-auth-border">
+						<button
+							onClick={handleSync}
+							disabled={syncing || accounts.length === 0}
+							className="flex w-full items-center justify-between px-4 py-3 text-left hover:bg-auth-elevated/50 transition-colors disabled:opacity-50"
+						>
+							<div className="flex items-center gap-3">
+								<Wifi className="h-4 w-4 text-primary-400" />
+								<div>
+									<span className="text-sm text-neutral-0">{t('deviceSync.syncThis')}</span>
+									<p className="text-[11px] text-neutral-500">
+										{accounts.length > 0
+											? t('settings.accountsCountLabel', { n: accounts.length })
+											: t('home.noAccounts')}
+									</p>
+								</div>
+							</div>
+							{syncing ? (
+								<div className="h-5 w-5 animate-spin rounded-full border-2 border-primary-500 border-t-transparent" />
+							) : null}
+						</button>
+
+						<button
+							onClick={() => refetch()}
+							className="flex w-full items-center gap-3 px-4 py-3 text-left hover:bg-auth-elevated/50 transition-colors"
+						>
+							<RefreshCw className="h-4 w-4 text-neutral-400" />
+							<span className="text-sm text-neutral-400">{t('deviceSync.refreshList')}</span>
+						</button>
+					</div>
+				</section>
+
+				<div className="rounded-lg bg-auth-elevated p-3">
+					<div className="flex items-start gap-2">
+						<Shield className="mt-0.5 h-4 w-4 shrink-0 text-neutral-500" />
+						<div className="text-xs text-neutral-500 space-y-1">
+							<p>{t('deviceSync.encryptionNote1')}</p>
+							<p>{t('deviceSync.encryptionNote2')}</p>
+						</div>
+					</div>
+				</div>
+			</div>
+
+			<BottomNav />
+		</div>
+	);
+}
+
+function getDeviceName(unknownLabel = 'Unknown device'): string {
+	const ua = navigator.userAgent;
+	if (ua.includes('iPhone')) return 'iPhone';
+	if (ua.includes('iPad')) return 'iPad';
+	if (ua.includes('Android')) return 'Android';
+	if (ua.includes('Windows')) return 'Windows PC';
+	if (ua.includes('Mac')) return 'Mac';
+	if (ua.includes('Linux')) return 'Linux';
+	return unknownLabel;
+}
