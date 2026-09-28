@@ -84,7 +84,7 @@ export default function CloudBackupPage() {
 
 	return (
 		<div className="flex h-full flex-col">
-			<header className="sticky top-0 z-10 flex items-center gap-3 border-b border-auth-border bg-auth-bg/80 px-4 py-3 backdrop-blur-md">
+			<header className="sticky top-0 z-10 flex items-center gap-3 border-b border-auth-border bg-auth-bg/80 h-[var(--layout-header-height)] px-4 backdrop-blur-md">
 				<button
 					onClick={() => navigate(toSlugged('/settings', slug))}
 					className="rounded-lg p-1.5 text-neutral-400 hover:bg-auth-elevated hover:text-neutral-0 transition-colors"

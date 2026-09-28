@@ -118,7 +118,7 @@ export default function HomePage() {
 			<NetworkStatus />
 
 			{/* Header */}
-			<header className="sticky top-0 z-10 border-b border-auth-border bg-auth-bg/80 px-4 py-3 backdrop-blur-md">
+			<header className="sticky top-0 z-10 flex items-center border-b border-auth-border bg-auth-bg/80 h-[var(--layout-header-height)] px-4 backdrop-blur-md">
 				<div className="flex items-center gap-2">
 					<ShieldCheck className="h-6 w-6 text-primary-500" />
 					<h1 className="text-lg font-bold text-neutral-0">{t('home.title')}</h1>
