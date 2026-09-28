@@ -6,6 +6,9 @@ import {
 	OAuthCallbackPage,
 	TenantSlugProvider,
 	TenantIndexGuard,
+	TenantRootRedirect,
+	useBranding,
+	BrandingInitializer,
 } from '@autional-cn/shared';
 import ErrorBoundary from './components/ErrorBoundary';
 import UnlockGate from './components/UnlockScreen';
@@ -46,9 +49,12 @@ function LayoutWrapper() {
 
 export default function App() {
 	const { t } = useTranslation();
+	useBranding();
+
 	return (
 		<ToastProvider>
 			<ErrorBoundary>
+				<BrandingInitializer />
 				<UnlockGate>
 					<a
 						href="#main-content"
@@ -61,6 +67,9 @@ export default function App() {
 						<main id="main-content" className="flex-1 overflow-y-auto pb-28">
 							<Routes>
 								<Route path="/oauth/callback" element={<OAuthCallbackPage />} />
+
+								{/* 裸根漏斗：有会话直达 /<slug>，否则整页跳 brand 选品牌 */}
+								<Route path="/" element={<TenantRootRedirect />} />
 
 								<Route
 									path="/:tenantSlug"
