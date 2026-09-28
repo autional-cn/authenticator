@@ -108,7 +108,7 @@ const FALLBACK_COLORS = [
 	{ color: '#ffffff', bgColor: '#eab308' },
 	{ color: '#ffffff', bgColor: '#22c55e' },
 	{ color: '#ffffff', bgColor: '#06b6d4' },
-	{ color: '#ffffff', bgColor: '#003153' },
+	{ color: '#ffffff', bgColor: 'var(--color-primary-700)' },
 	{ color: '#ffffff', bgColor: '#8b5cf6' },
 	{ color: '#ffffff', bgColor: '#d946ef' },
 	{ color: '#ffffff', bgColor: '#f43f5e' },
