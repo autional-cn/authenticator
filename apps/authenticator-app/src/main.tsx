@@ -7,6 +7,7 @@ import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 
 import { ThemeProvider } from '@autional-cn/ui';
 import App from './App';
+import './non-tenant-segments';
 import './app/globals.css';
 import { initializeStorage, migrateFromV1 } from './lib/storage';
 import ErrorBoundary from './components/ErrorBoundary';
