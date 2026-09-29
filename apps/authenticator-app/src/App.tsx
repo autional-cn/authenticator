@@ -74,7 +74,8 @@ export default function App() {
 								<Route
 									path="/:tenantSlug"
 									element={
-										<RequireAuth>
+										/* notFound：确定性未知 slug（by-slug 404）原地渲染 404，不发弹跳（F-W6） */
+										<RequireAuth notFound={<NotFoundRoute />}>
 											<LayoutWrapper />
 										</RequireAuth>
 									}
