@@ -17,7 +17,7 @@
     "@autional-cn/shared": "workspace:*",
     "@autional-cn/tailwind-preset": "0.1.0-rc",
     "@autional-cn/tokens": "0.1.0-rc",
-    "@autional-cn/ui": "workspace:*",
+    "@autional-cn/ui": "0.1.0-rc",
     "@tanstack/react-query": "5.100.9",
     "html5-qrcode": "2.3.8",
     "i18next": "26.0.10",
