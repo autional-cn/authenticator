@@ -51,7 +51,7 @@ describe('initializeStorage', () => {
 		const { initializeStorage } = await import('../storage');
 		await initializeStorage();
 
-		const raw = mockLocalStorage['authms-authenticator-v2'];
+		const raw = mockLocalStorage['autional-authenticator-v2'];
 		expect(raw).toBeTruthy();
 		const payload = JSON.parse(raw);
 		expect(payload.version).toBe(2);
@@ -70,7 +70,7 @@ describe('initializeStorage', () => {
 			deviceKeyWrap: null,
 			data: { iv: 'test', ciphertext: 'test' },
 		});
-		mockLocalStorage['authms-authenticator-v2'] = existing;
+		mockLocalStorage['autional-authenticator-v2'] = existing;
 
 		Object.defineProperty(globalThis, 'localStorage', {
 			value: {
@@ -84,7 +84,7 @@ describe('initializeStorage', () => {
 		const { initializeStorage } = await import('../storage');
 		await initializeStorage();
 
-		expect(mockLocalStorage['authms-authenticator-v2']).toBe(existing);
+		expect(mockLocalStorage['autional-authenticator-v2']).toBe(existing);
 	});
 });
 
@@ -252,7 +252,7 @@ describe('migrateFromV1', () => {
 		expect(mockLocalStorage['authms-authenticator-storage']).toBeUndefined();
 
 		// V2 key should exist
-		expect(mockLocalStorage['authms-authenticator-v2']).toBeTruthy();
+		expect(mockLocalStorage['autional-authenticator-v2']).toBeTruthy();
 
 		const loaded = await loadWithoutPin();
 		expect(loaded).toHaveLength(1);
@@ -262,7 +262,7 @@ describe('migrateFromV1', () => {
 
 describe('corrupted storage', () => {
 	it('handles corrupted JSON gracefully', async () => {
-		mockLocalStorage['authms-authenticator-v2'] = 'not-valid-json{{{';
+		mockLocalStorage['autional-authenticator-v2'] = 'not-valid-json{{{';
 
 		Object.defineProperty(globalThis, 'localStorage', {
 			value: {
@@ -389,7 +389,7 @@ describe('hasPinProtection edge cases', () => {
 	});
 
 	it('returns false for corrupted JSON', async () => {
-		mockLocalStorage['authms-authenticator-v2'] = '{broken';
+		mockLocalStorage['autional-authenticator-v2'] = '{broken';
 
 		Object.defineProperty(globalThis, 'localStorage', {
 			value: {

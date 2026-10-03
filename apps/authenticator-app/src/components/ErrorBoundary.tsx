@@ -13,7 +13,8 @@ export default function ErrorBoundary({ children }: Props) {
 
 	const handleHardReset = () => {
 		if (confirm(t('error.confirmReset'))) {
-			localStorage.removeItem('authms-authenticator-v2');
+			localStorage.removeItem('autional-authenticator-v2');
+			// v1 历史数据键（storage.ts migrateFromV1 读取源）：硬重置一并清除
 			localStorage.removeItem('authms-authenticator-storage');
 			window.location.reload();
 		}

@@ -8,8 +8,8 @@
 
 const WEBAUTHN_RP_NAME = 'Autional Authenticator';
 const WEBAUTHN_RP_ID = typeof window !== 'undefined' ? window.location.hostname : 'localhost';
-const STORAGE_KEY = 'authms_webauthn_credential_id';
-const PRF_SALT_KEY = 'authms_webauthn_prf_salt';
+const STORAGE_KEY = 'autional_webauthn_credential_id';
+const PRF_SALT_KEY = 'autional_webauthn_prf_salt';
 
 /** PRF (hmacGetSecret) 扩展：WebAuthn 标准类型未覆盖，按 W3C PRF 扩展规范定义 */
 interface PRFExtension {
@@ -82,7 +82,7 @@ export async function registerBiometric(): Promise<boolean> {
 		const publicKey: PublicKeyCredentialCreationOptions = {
 			challenge,
 			rp: { name: WEBAUTHN_RP_NAME, id: WEBAUTHN_RP_ID },
-			user: { id: userId, name: 'authms-user', displayName: 'Autional User' },
+			user: { id: userId, name: 'autional-user', displayName: 'Autional User' },
 			pubKeyCredParams: [{ alg: -7, type: 'public-key' }],
 			authenticatorSelection: {
 				authenticatorAttachment: 'platform',

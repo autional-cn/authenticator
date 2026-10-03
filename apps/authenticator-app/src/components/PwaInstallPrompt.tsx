@@ -15,7 +15,7 @@ export default function PwaInstallPrompt() {
 			// Show prompt only if not already installed (standalone)
 			if (window.matchMedia('(display-mode: standalone)').matches) return;
 			// Don't show if user dismissed before
-			if (localStorage.getItem('authms-pwa-dismissed') === '1') return;
+			if (localStorage.getItem('autional-pwa-dismissed') === '1') return;
 			setShow(true);
 		};
 
@@ -38,7 +38,7 @@ export default function PwaInstallPrompt() {
 
 	const handleDismiss = () => {
 		setShow(false);
-		localStorage.setItem('authms-pwa-dismissed', '1');
+		localStorage.setItem('autional-pwa-dismissed', '1');
 	};
 
 	if (!show) return null;

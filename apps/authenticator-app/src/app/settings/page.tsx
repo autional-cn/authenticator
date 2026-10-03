@@ -147,7 +147,7 @@ export default function SettingsPage() {
 				const url = URL.createObjectURL(blob);
 				const a = document.createElement('a');
 				a.href = url;
-				a.download = `authms-authenticator-backup-${new Date().toISOString().slice(0, 10)}.json`;
+				a.download = `autional-authenticator-backup-${new Date().toISOString().slice(0, 10)}.json`;
 				a.click();
 				URL.revokeObjectURL(url);
 				showToast(t('settings.exportSuccessEncrypted'), 'success');
@@ -165,7 +165,7 @@ export default function SettingsPage() {
 			const url = URL.createObjectURL(blob);
 			const a = document.createElement('a');
 			a.href = url;
-			a.download = `authms-authenticator-backup-${new Date().toISOString().slice(0, 10)}.json`;
+			a.download = `autional-authenticator-backup-${new Date().toISOString().slice(0, 10)}.json`;
 			a.click();
 			URL.revokeObjectURL(url);
 			showToast(t('settings.exportSuccessPlain'), 'success');

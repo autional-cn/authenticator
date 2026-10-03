@@ -30,8 +30,8 @@ import {
 } from './crypto';
 import type { TotpAccount } from './store';
 
-const STORAGE_KEY = 'authms-authenticator-v2';
-const PIN_ATTEMPTS_KEY = 'authms-authenticator-pin-attempts';
+const STORAGE_KEY = 'autional-authenticator-v2';
+const PIN_ATTEMPTS_KEY = 'autional-authenticator-pin-attempts';
 const MAX_PIN_ATTEMPTS = 5;
 const PIN_COOLDOWN_MS = 30_000;
 
@@ -288,6 +288,7 @@ export async function setPinProtection(pin: string | null): Promise<void> {
  * Migrate from v1 (old zustand-persist plaintext) to v2 encrypted.
  */
 export async function migrateFromV1(): Promise<void> {
+	// 'authms-authenticator-storage' 为 v1 历史数据键名（非品牌名，改名将使迁移永久失效）
 	const v1Raw = localStorage.getItem('authms-authenticator-storage');
 	if (!v1Raw) return;
 
