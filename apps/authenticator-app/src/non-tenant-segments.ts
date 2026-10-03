@@ -24,6 +24,8 @@ export const NON_TENANT_SEGMENTS = [
 	'devices',
 	'login-approve',
 	'notification',
+	'notifications',
+	'push-approve',
 	'settings',
 ] as const;
 

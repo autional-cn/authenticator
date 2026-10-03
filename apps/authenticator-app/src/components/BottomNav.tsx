@@ -35,7 +35,7 @@ export default function BottomNav() {
 	const navItems = [
 		{ path: '/', key: navItemKeys[0], icon: navItemIcons[0] },
 		{
-			path: '/notification/api/v1/notifications',
+			path: '/notifications',
 			key: navItemKeys[1],
 			icon: navItemIcons[1],
 			badge: unreadCount,

@@ -1,6 +1,7 @@
 import { lazy, Suspense } from 'react';
-import { Routes, Route, Outlet, useParams } from 'react-router';
+import { Routes, Route, Outlet, useParams, Navigate, useLocation } from 'react-router';
 import { useTranslation } from 'react-i18next';
+import { toSlugged, useTenantSlug } from './lib/slug';
 import {
 	RequireAuth,
 	OAuthCallbackPage,
@@ -36,6 +37,13 @@ function NotFoundRoute() {
 			<NotFoundPage />
 		</Suspense>
 	);
+}
+
+/** 旧路径客户端重定向：按 tenantSlug 组装新绝对路径，保留 query/hash，replace 历史记录。 */
+function LegacyRedirect({ to }: { to: string }) {
+	const slug = useTenantSlug();
+	const { search, hash } = useLocation();
+	return <Navigate to={`${toSlugged(to, slug)}${search}${hash}`} replace />;
 }
 
 function LayoutWrapper() {
@@ -129,7 +137,7 @@ function appRoutes(t: (key: string) => string) {
 				}
 			/>
 			<Route
-				path="notification/api/v1/push-approve"
+				path="push-approve"
 				element={
 					<Suspense fallback={<LoadingScreen message={t('common.loading')} />}>
 						<PushApprovePage />
@@ -177,13 +185,18 @@ function appRoutes(t: (key: string) => string) {
 				}
 			/>
 			<Route
-				path="notification/api/v1/notifications"
+				path="notifications"
 				element={
 					<Suspense fallback={<LoadingScreen message={t('common.loading')} />}>
 						<NotificationsPage />
 					</Suspense>
 				}
 			/>
+			{/* 旧路径（AuthMS 遗留 /xxx/api/v1/xxx 形态）重定向，勿删：书签与推送深链可能指向它们。
+			    首段名单需同步 non-tenant-segments.ts（ui 仓 scripts/check-non-tenant.mjs 有闸门比对）。 */}
+			<Route path="notification/api/v1/push-approve" element={<LegacyRedirect to="/push-approve" />} />
+			<Route path="notification/api/v1/notifications" element={<LegacyRedirect to="/notifications" />} />
+
 			<Route path="*" element={<NotFoundRoute />} />
 		</>
 	);
