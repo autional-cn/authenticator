@@ -1,5 +1,5 @@
 import { useTranslation } from 'react-i18next';
-import { useSecurityScore } from '@/hooks/useSecurityScore';
+import { useSecurityScore } from '@/hooks/use-security-score';
 
 export default function SettingsSecurityScore({
 	accountsCount,
