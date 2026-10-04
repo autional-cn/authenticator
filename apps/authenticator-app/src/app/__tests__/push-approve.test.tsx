@@ -35,6 +35,7 @@ describe('PushApprovePage (AU-26)', () => {
 		await waitFor(() => {
 			expect(screen.getByText('重试')).toBeInTheDocument();
 		});
+		expect(screen.getByText('出错了')).toBeInTheDocument();
 		expect(screen.getByText('返回首页')).toBeInTheDocument();
 	});
 
@@ -53,7 +54,7 @@ describe('PushApprovePage (AU-26)', () => {
 		renderPage('/push-approve');
 
 		await waitFor(() => {
-			expect(screen.getByText('No challenge ID provided')).toBeInTheDocument();
+			expect(screen.getByText('缺少验证参数')).toBeInTheDocument();
 		});
 		expect(screen.queryByText('重试')).toBeNull();
 		expect(screen.getByText('返回首页')).toBeInTheDocument();
@@ -66,5 +67,32 @@ describe('PushApprovePage (AU-26)', () => {
 
 		await waitFor(() => expect(screen.getByText('返回首页')).toBeInTheDocument());
 		expect(screen.getByText('返回首页').closest('a')).toHaveAttribute('href', '/');
+	});
+
+	it('T5 终态 approved → 「已批准登录」+ 描述（AU-25 i18n 收口回归锁）', async () => {
+		mockGetPushChallengeStatus.mockResolvedValue({ status: 'approved' });
+		renderPage('/push-approve?challengeId=c1');
+
+		await waitFor(() => {
+			expect(screen.getByText('已批准登录')).toBeInTheDocument();
+		});
+		expect(screen.getByText('您已成功批准该登录请求。')).toBeInTheDocument();
+	});
+
+	it('T6 pending 态全中文审批面（标题/上下文/核验数字/按钮，AU-25）', async () => {
+		mockGetPushChallengeStatus.mockResolvedValue({
+			status: 'pending',
+			loginContext: 'Chrome on Windows',
+		});
+		renderPage('/push-approve?challengeId=c1&numberMatching=654321');
+
+		await waitFor(() => {
+			expect(screen.getByText('登录审批请求')).toBeInTheDocument();
+		});
+		expect(screen.getByText(/Chrome on Windows/)).toBeInTheDocument();
+		expect(screen.getByText('核验数字')).toBeInTheDocument();
+		expect(screen.getByText('654321')).toBeInTheDocument();
+		expect(screen.getByText('批准')).toBeInTheDocument();
+		expect(screen.getByText('拒绝')).toBeInTheDocument();
 	});
 });

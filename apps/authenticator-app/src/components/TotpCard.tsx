@@ -122,11 +122,11 @@ export default function TotpCard({
 					</div>
 					<button
 						onClick={(e) => {
-							if (batchMode) e.stopPropagation();
+							e.stopPropagation();
 							setShowDelete(!showDelete);
 						}}
 						className="rounded-md p-1.5 text-[var(--color-text-muted)] hover:bg-danger/10 hover:text-danger transition-colors"
-						aria-label="删除账户"
+						aria-label={t('card.deleteAccount')}
 					>
 						<Trash2 className="h-3.5 w-3.5" />
 					</button>
@@ -136,7 +136,7 @@ export default function TotpCard({
 				<div className="flex items-center justify-between">
 					<button
 						onClick={(e) => {
-							if (batchMode) e.stopPropagation();
+							e.stopPropagation();
 							handleCopy();
 						}}
 						className="group flex items-center gap-3"
@@ -153,7 +153,10 @@ export default function TotpCard({
 
 				{/* Delete confirmation overlay */}
 				{showDelete && (
-					<div className="absolute inset-0 flex flex-col items-center justify-center bg-auth-surface/95 backdrop-blur-sm gap-3">
+					<div
+						className="absolute inset-0 flex flex-col items-center justify-center bg-auth-surface/95 backdrop-blur-sm gap-3"
+						onClick={(e) => e.stopPropagation()}
+					>
 						<p className="text-sm text-[var(--color-text-secondary)]">{t('card.confirmDelete')}</p>
 						<div className="flex gap-2">
 							<button

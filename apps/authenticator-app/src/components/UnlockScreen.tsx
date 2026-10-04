@@ -55,7 +55,7 @@ function PinInputScreen() {
 			<div className="mb-8 flex h-20 w-20 items-center justify-center rounded-3xl bg-primary-500/10">
 				<ShieldCheck className="h-10 w-10 text-primary-500" />
 			</div>
-			<h1 className="mb-2 text-xl font-bold text-[var(--color-text-primary)]">Autional 身份验证器</h1>
+			<h1 className="mb-2 text-xl font-bold text-[var(--color-text-primary)]">{t('app.title')}</h1>
 			<p className="mb-8 text-sm text-[var(--color-text-secondary)]">
 				{bioAvailable && hasBiometricRegistered() ? t('unlock.bioOrPin') : t('unlock.enterPin')}
 			</p>

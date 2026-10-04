@@ -35,7 +35,7 @@ export default function PushApprovePage() {
 		setError(null);
 
 		if (!challengeId) {
-			setError('No challenge ID provided');
+			setError(t('pushApprove.missingParams'));
 			setLoading(false);
 			return;
 		}
@@ -47,11 +47,11 @@ export default function PushApprovePage() {
 				setResult(data.status === 'approved' ? 'approved' : 'denied');
 			}
 		} catch (err) {
-			setError(extractApiErrorMessage(err, 'Failed to load challenge'));
+			setError(extractApiErrorMessage(err, t('pushApprove.loadFailed')));
 		} finally {
 			setLoading(false);
 		}
-	}, [challengeId]);
+	}, [challengeId, t]);
 
 	useEffect(() => {
 		void loadChallenge();
@@ -64,7 +64,7 @@ export default function PushApprovePage() {
 			await approvePushChallenge(challengeId, urlNumberMatching);
 			setResult('approved');
 		} catch (err: unknown) {
-			setError(extractApiErrorMessage(err, 'Approval failed'));
+			setError(extractApiErrorMessage(err, t('pushApprove.approveFailed')));
 		} finally {
 			setActionLoading(false);
 		}
@@ -77,7 +77,7 @@ export default function PushApprovePage() {
 			await denyPushChallenge(challengeId, urlNumberMatching);
 			setResult('denied');
 		} catch (err: unknown) {
-			setError(extractApiErrorMessage(err, 'Denial failed'));
+			setError(extractApiErrorMessage(err, t('pushApprove.denyFailed')));
 		} finally {
 			setActionLoading(false);
 		}
@@ -88,7 +88,7 @@ export default function PushApprovePage() {
 			<div className="flex min-h-screen items-center justify-center bg-gray-50 dark:bg-auth-bg">
 				<div className="text-center">
 					<div className="mx-auto mb-4 h-8 w-8 animate-spin rounded-full border-2 border-gray-300 border-t-blue-600 dark:border-neutral-700 dark:border-t-primary-500" />
-					<p className="text-gray-600 dark:text-[var(--color-text-secondary)]">Loading challenge...</p>
+					<p className="text-gray-600 dark:text-[var(--color-text-secondary)]">{t('pushApprove.loading')}</p>
 				</div>
 			</div>
 		);
@@ -102,7 +102,7 @@ export default function PushApprovePage() {
 						<AlertTriangle className="h-12 w-12 text-red-500" />
 					</div>
 					<h1 className="mb-2 text-center text-xl font-semibold text-gray-900 dark:text-[var(--color-text-primary)]">
-						Error
+						{t('pushApprove.errorTitle')}
 					</h1>
 					<p className="text-center text-gray-600 dark:text-[var(--color-text-secondary)]">{error}</p>
 					{/* AU-26：两枚真实出路 —— 有 challengeId 才给真重试（不可重试的「重试」不造假） */}
@@ -140,12 +140,10 @@ export default function PushApprovePage() {
 						)}
 					</div>
 					<h1 className="mb-2 text-center text-xl font-semibold text-gray-900 dark:text-[var(--color-text-primary)]">
-						{isApproved ? 'Login Approved' : 'Login Denied'}
+						{isApproved ? t('pushApprove.approvedTitle') : t('pushApprove.deniedTitle')}
 					</h1>
 					<p className="text-center text-gray-600 dark:text-[var(--color-text-secondary)]">
-						{isApproved
-							? 'You have successfully approved the login request.'
-							: 'You have denied the login request.'}
+						{isApproved ? t('pushApprove.approvedDesc') : t('pushApprove.deniedDesc')}
 					</p>
 				</div>
 			</div>
@@ -162,25 +160,25 @@ export default function PushApprovePage() {
 				</div>
 
 				<h1 className="mb-2 text-center text-xl font-semibold text-gray-900 dark:text-[var(--color-text-primary)]">
-					Login Approval Request
+					{t('pushApprove.requestTitle')}
 				</h1>
 
 				{challenge?.loginContext && (
 					<p className="mb-4 text-center text-sm text-gray-600 dark:text-[var(--color-text-secondary)]">
-						Context: {challenge.loginContext}
+						{t('pushApprove.contextLabel')} {challenge.loginContext}
 					</p>
 				)}
 
 				{urlNumberMatching && (
 					<div className="mb-6 rounded-lg bg-gray-100 dark:bg-auth-elevated p-4 text-center">
 						<p className="text-xs uppercase tracking-wide text-gray-500 dark:text-[var(--color-text-muted)]">
-							Verification Number
+							{t('pushApprove.verificationNumber')}
 						</p>
 						<p className="mt-1 text-4xl font-bold text-gray-900 dark:text-[var(--color-text-primary)]">
 							{urlNumberMatching}
 						</p>
 						<p className="mt-1 text-xs text-gray-500 dark:text-[var(--color-text-muted)]">
-							Confirm this number matches the login screen
+							{t('pushApprove.numberHint')}
 						</p>
 					</div>
 				)}
@@ -197,14 +195,14 @@ export default function PushApprovePage() {
 						disabled={actionLoading}
 						className="flex-1 rounded-lg border border-gray-300 dark:border-auth-border bg-white dark:bg-auth-elevated px-4 py-3 font-medium text-gray-700 dark:text-[var(--color-text-secondary)] transition hover:bg-gray-50 dark:hover:bg-auth-border disabled:opacity-50"
 					>
-						{actionLoading ? '...' : 'Deny'}
+						{actionLoading ? '...' : t('pushApprove.deny')}
 					</button>
 					<button
 						onClick={handleApprove}
 						disabled={actionLoading}
 						className="flex-1 rounded-lg bg-blue-600 dark:bg-primary-600 px-4 py-3 font-medium text-white transition hover:bg-blue-700 dark:hover:bg-primary-500 disabled:opacity-50"
 					>
-						{actionLoading ? '...' : 'Approve'}
+						{actionLoading ? '...' : t('pushApprove.approve')}
 					</button>
 				</div>
 			</div>

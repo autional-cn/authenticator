@@ -24,7 +24,7 @@ import BottomNav from '@/components/BottomNav';
 import { toSlugged, useTenantSlug } from '../../lib/slug';
 
 export default function CloudBackupPage() {
-	const { t } = useTranslation();
+	const { t, i18n } = useTranslation();
 	const navigate = useNavigate();
 	const slug = useTenantSlug();
 	const { accounts } = useAuthenticatorStore();
@@ -74,7 +74,7 @@ export default function CloudBackupPage() {
 	const formatDate = (iso?: string) => {
 		if (!iso) return t('cloudBackup.unknown');
 		try {
-			return new Date(iso).toLocaleString('zh-CN');
+			return new Date(iso).toLocaleString(i18n.language);
 		} catch {
 			return iso;
 		}

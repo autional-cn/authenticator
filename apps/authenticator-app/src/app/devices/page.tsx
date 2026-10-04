@@ -11,7 +11,7 @@ import { toSlugged, useTenantSlug } from '../../lib/slug';
 export default function DevicesPage() {
 	const navigate = useNavigate();
 	const slug = useTenantSlug();
-	const { t } = useTranslation();
+	const { t, i18n } = useTranslation();
 	const [devices, setDevices] = useState<GeneratedTypes.TrustedDeviceItem[]>([]);
 	const [loading, setLoading] = useState(true);
 	const [error, setError] = useState<string | null>(null);
@@ -47,7 +47,7 @@ export default function DevicesPage() {
 	const formatDate = (iso?: string) => {
 		if (!iso) return t('devices.unknownDate');
 		try {
-			return new Date(iso).toLocaleDateString('zh-CN');
+			return new Date(iso).toLocaleDateString(i18n.language);
 		} catch {
 			return iso;
 		}
@@ -79,23 +79,26 @@ export default function DevicesPage() {
 					</div>
 				) : (
 					<div className="space-y-2">
-						{devices.map((device) => (
-							<div
-								key={device.id}
-								className="flex items-center gap-3 rounded-xl border border-auth-border bg-auth-surface p-3"
-							>
-								<div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-primary-500/10">
-									<Smartphone className="h-5 w-5 text-primary-400" />
-								</div>
-								<div className="min-w-0 flex-1">
-									<p className="text-sm font-medium text-[var(--color-text-primary)] truncate">
-										{device.deviceName || t('devices.unnamed')}
-									</p>
-									<p className="text-[11px] text-[var(--color-text-muted)]">
-										{formatDate(device.createdAt)}
-										{device.ipAddress ? ` · ${device.ipAddress}` : ''}
-									</p>
-								</div>
+						{devices.map((device) => {
+							// 运行时契约 = identity DeviceResponse json:"ip"（shared 生成物 ipAddress 陈旧）
+							const ip = (device as { ip?: string }).ip;
+							return (
+								<div
+									key={device.id}
+									className="flex items-center gap-3 rounded-xl border border-auth-border bg-auth-surface p-3"
+								>
+									<div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-primary-500/10">
+										<Smartphone className="h-5 w-5 text-primary-400" />
+									</div>
+									<div className="min-w-0 flex-1">
+										<p className="text-sm font-medium text-[var(--color-text-primary)] truncate">
+											{device.deviceName || t('devices.unnamed')}
+										</p>
+										<p className="text-[11px] text-[var(--color-text-muted)]">
+											{formatDate(device.createdAt)}
+											{ip ? ` · ${ip}` : ''}
+										</p>
+									</div>
 								<button
 									onClick={() => handleDelete(device.id)}
 									disabled={deletingId === device.id}
@@ -105,7 +108,8 @@ export default function DevicesPage() {
 									<Trash2 className="h-4 w-4" />
 								</button>
 							</div>
-						))}
+							);
+						})}
 					</div>
 				)}
 

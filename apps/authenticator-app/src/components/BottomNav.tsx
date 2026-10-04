@@ -21,9 +21,10 @@ export default function BottomNav() {
 	useEffect(() => {
 		if (!userId) return;
 		const fetchUnread = () => {
+			// 运行时响应键 = unreadCount（拦截器解包 + camelCase；shared 生成物字段陈旧）
 			GeneratedApi.notificationsUnreadCount()
-				.then((res: { count?: number; data?: { count?: number } }) => {
-					setUnreadCount(res?.count ?? res?.data?.count ?? 0);
+				.then((res: { unreadCount?: number }) => {
+					setUnreadCount(res?.unreadCount ?? 0);
 				})
 				.catch(() => {});
 		};

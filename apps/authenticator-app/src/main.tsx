@@ -38,7 +38,9 @@ async function bootstrap() {
 		const rootEl = document.getElementById('root');
 		if (rootEl) {
 			rootEl.innerHTML =
-				'<div style="display:flex;align-items:center;justify-content:center;height:100vh;padding:2rem;text-align:center;font-family:system-ui;color:#fff;background:#0a0a0a"><div><h1 style="font-size:1.25rem;margin-bottom:0.5rem">存储初始化失败</h1><p style="font-size:0.875rem;color:#999">' +
+				'<div style="display:flex;align-items:center;justify-content:center;height:100vh;padding:2rem;text-align:center;font-family:system-ui;color:#fff;background:#0a0a0a"><div><h1 style="font-size:1.25rem;margin-bottom:0.5rem">' +
+				i18n.t('bootstrap.storageInitFailed') +
+				'</h1><p style="font-size:0.875rem;color:#999">' +
 				String(err instanceof Error ? err.message : err) +
 				'</p></div></div>';
 		}

@@ -12,6 +12,8 @@ import {
 	PinOff,
 	ChevronUp,
 	ChevronDown,
+	Eye,
+	EyeOff,
 } from 'lucide-react';
 import { useAuthenticatorStore } from '@/lib/store';
 import { generateTOTP } from '@/lib/totp';
@@ -19,8 +21,7 @@ import { showToast } from '@autional-cn/ui';
 import BrandIcon from '@/components/BrandIcon';
 import CountdownRing from '@/components/CountdownRing';
 import { toSlugged, useTenantSlug } from '../../lib/slug';
-
-const PRESET_GROUPS = ['工作', '个人', '金融', '社交', '开发', '其他'];
+import { PRESET_GROUPS, groupLabel } from '@/lib/groups';
 
 export default function AccountDetailPage() {
 	const navigate = useNavigate();
@@ -40,6 +41,7 @@ export default function AccountDetailPage() {
 	const [totp, setTotp] = useState<{ code: string; progress: number } | null>(null);
 	const [copied, setCopied] = useState(false);
 	const [showDelete, setShowDelete] = useState(false);
+	const [showSecret, setShowSecret] = useState(false);
 	const [hasChanges, setHasChanges] = useState(false);
 
 	useEffect(() => {
@@ -100,6 +102,7 @@ export default function AccountDetailPage() {
 	const handleDelete = () => {
 		if (!account) return;
 		removeAccount(account.id);
+		showToast(t('account.deleted'), 'success');
 		navigate(toSlugged('/', slug));
 	};
 
@@ -206,7 +209,7 @@ export default function AccountDetailPage() {
 											: 'bg-auth-elevated text-[var(--color-text-secondary)] hover:text-[var(--color-text-primary)]'
 									}`}
 								>
-									{g}
+									{groupLabel(t, g)}
 								</button>
 							))}
 						</div>
@@ -226,8 +229,18 @@ export default function AccountDetailPage() {
 						<label className="mb-1.5 block text-xs font-medium text-[var(--color-text-secondary)]">
 							{t('account.secretLabel')}
 						</label>
-						<div className="rounded-xl border border-auth-border bg-auth-elevated px-3.5 py-2.5">
-							<code className="break-all text-xs font-mono text-[var(--color-text-muted)]">{account.secret}</code>
+						<div className="flex items-center justify-between gap-2 rounded-xl border border-auth-border bg-auth-elevated px-3.5 py-2.5">
+							<code className="break-all text-xs font-mono text-[var(--color-text-muted)]">
+								{showSecret ? account.secret : '•••• •••• •••• ••••'}
+							</code>
+							<button
+								type="button"
+								onClick={() => setShowSecret((v) => !v)}
+								aria-label={showSecret ? t('account.hideSecret') : t('account.revealSecret')}
+								className="shrink-0 rounded-md p-1.5 text-[var(--color-text-muted)] hover:bg-auth-border hover:text-[var(--color-text-secondary)] transition-colors"
+							>
+								{showSecret ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
+							</button>
 						</div>
 						<p className="mt-1 text-[11px] text-[var(--color-text-muted)]">{t('account.secretHint')}</p>
 					</div>

@@ -50,7 +50,7 @@ const TYPE_COLORS: Record<string, string> = {
 export default function NotificationsPage() {
 	const navigate = useNavigate();
 	const slug = useTenantSlug();
-	const { t } = useTranslation();
+	const { t, i18n } = useTranslation();
 	const { userId } = useAuth();
 
 	const [items, setItems] = useState<NotificationItem[]>([]);
@@ -85,11 +85,9 @@ export default function NotificationsPage() {
 	const fetchUnreadCount = useCallback(async () => {
 		if (!userId) return;
 		try {
-			const res = (await GeneratedApi.notificationsUnreadCount()) as {
-				count?: number;
-				data?: { count?: number };
-			};
-			setUnreadCount(res?.count ?? res?.data?.count ?? 0);
+			// 运行时响应键 = unreadCount（拦截器解包 + camelCase；shared 生成物字段陈旧）
+			const res = (await GeneratedApi.notificationsUnreadCount()) as { unreadCount?: number };
+			setUnreadCount(res?.unreadCount ?? 0);
 		} catch {
 			// 未读计数获取失败时保持 0
 		}
@@ -167,7 +165,7 @@ export default function NotificationsPage() {
 			if (diffHours < 24) return t('notifications.hoursAgo', { n: diffHours });
 			const diffDays = Math.floor(diffHours / 24);
 			if (diffDays < 7) return t('notifications.daysAgo', { n: diffDays });
-			return d.toLocaleDateString('zh-CN', {
+			return d.toLocaleDateString(i18n.language, {
 				month: 'short',
 				day: 'numeric',
 			});
@@ -247,19 +245,15 @@ export default function NotificationsPage() {
 					<ErrorState description={error} onRetry={() => fetchNotifications()} />
 				) : filtered.length === 0 ? (
 					<div className="py-12 text-center text-sm text-[var(--color-text-secondary)]">
-						{t('notifications.empty')}
+						{t(filter === 'unread' ? 'notifications.emptyUnread' : 'notifications.empty')}
 					</div>
 				) : (
 					<div className="space-y-2">
-						{filtered.map((item) => (
-							<button
-								key={item.id}
-								onClick={() => {
-									if (!item.isRead) handleMarkRead(item.id);
-									if (item.actionUrl) handleActionUrl(item.actionUrl);
-								}}
-								className={`w-full text-left rounded-xl border border-auth-border bg-auth-surface p-3 transition-colors hover:bg-auth-elevated ${getPriorityStyles(item.priority)} ${!item.isRead ? 'bg-auth-elevated/50' : ''}`}
-							>
+						{filtered.map((item) => {
+							// AU-11：已读且无动作的条目降级为非按钮（不假示可点击）
+							const interactive = !item.isRead || !!item.actionUrl;
+							const itemClass = `w-full text-left rounded-xl border border-auth-border bg-auth-surface p-3 ${interactive ? 'transition-colors hover:bg-auth-elevated' : ''} ${getPriorityStyles(item.priority)} ${!item.isRead ? 'bg-auth-elevated/50' : ''}`;
+							const content = (
 								<div className="flex items-start gap-3">
 									<div className="mt-0.5 shrink-0">{getTypeIcon(item.type)}</div>
 									<div className="min-w-0 flex-1">
@@ -291,8 +285,24 @@ export default function NotificationsPage() {
 										)}
 									</div>
 								</div>
-							</button>
-						))}
+							);
+							return interactive ? (
+								<button
+									key={item.id}
+									onClick={() => {
+										if (!item.isRead) handleMarkRead(item.id);
+										if (item.actionUrl) handleActionUrl(item.actionUrl);
+									}}
+									className={itemClass}
+								>
+									{content}
+								</button>
+							) : (
+								<div key={item.id} className={itemClass}>
+									{content}
+								</div>
+							);
+						})}
 					</div>
 				)}
 			</div>

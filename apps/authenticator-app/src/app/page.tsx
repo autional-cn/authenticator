@@ -1,4 +1,4 @@
-import { useState, useMemo, useCallback } from 'react';
+import { useState, useMemo, useCallback, useEffect } from 'react';
 import { useNavigate } from 'react-router';
 import { ShieldCheck, Search, X, LayoutGrid, List, Copy } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
@@ -11,6 +11,7 @@ import BottomNav from '@/components/BottomNav';
 import NetworkStatus from '@/components/NetworkStatus';
 import { LanguageSwitcher } from '@autional-cn/ui';
 import { toSlugged, useTenantSlug } from '../lib/slug';
+import { groupLabel, loadKnownGroups, rememberGroups } from '@/lib/groups';
 
 export default function HomePage() {
 	const navigate = useNavigate();
@@ -29,13 +30,26 @@ export default function HomePage() {
 	const [batchMode, setBatchMode] = useState(false);
 	const [selectedIds, setSelectedIds] = useState<Set<string>>(new Set());
 
-	// Extract all unique groups
+	const [knownGroups, setKnownGroups] = useState<string[]>(loadKnownGroups);
+
+	// Extract all unique groups（AU-07：与曾出现过的分组取并集，空组 chip 保留）
 	const groups = useMemo(() => {
-		const set = new Set<string>();
+		const set = new Set<string>(knownGroups);
 		accounts.forEach((a) => {
 			if (a.group) set.add(a.group);
 		});
 		return Array.from(set).sort();
+	}, [accounts, knownGroups]);
+
+	// AU-07：记住出现过的分组（组内末账户删除后 chip 不消失）
+	useEffect(() => {
+		const current = accounts.map((a) => a.group).filter((g): g is string => !!g);
+		setKnownGroups((prev) => {
+			const merged = Array.from(new Set([...prev, ...current])).sort();
+			if (merged.length === prev.length) return prev;
+			rememberGroups(merged);
+			return merged;
+		});
 	}, [accounts]);
 
 	// Filter accounts by search + group
@@ -112,39 +126,31 @@ export default function HomePage() {
 		navigate(toSlugged(`/account?id=${id}`, slug));
 	};
 
+	const handleDeleteAccount = useCallback(
+		(id: string) => {
+			removeAccount(id);
+			showToast(t('account.deleted'), 'success');
+		},
+		[removeAccount, t],
+	);
+
 	return (
 		<div className="flex h-full flex-col">
 			{/* Network Status Banner */}
 			<NetworkStatus />
 
 			{/* Header */}
-			<header className="sticky top-0 z-10 flex items-center border-b border-auth-border bg-auth-bg/80 h-[var(--layout-header-height)] px-4 backdrop-blur-md">
-				<div className="flex items-center gap-2">
-					<ShieldCheck className="h-6 w-6 text-primary-500" />
-					<h1 className="text-lg font-bold text-[var(--color-text-primary)]">{t('home.title')}</h1>
-					<LanguageSwitcher className="ml-auto mr-2" />
-					<span className="rounded-full bg-primary-500/10 px-2 py-0.5 text-[10px] font-medium text-primary-400">
-						{t('home.accountsCount', { n: accounts.length })}
-					</span>
-					<button
-						onClick={() => {
-							if (batchMode) {
-								exitBatchMode();
-							} else {
-								setBatchMode(true);
-							}
-						}}
-						className={`rounded-lg px-2 py-1 text-xs font-medium transition-colors ${
-							batchMode ? 'bg-primary-600 text-white' : 'text-[var(--color-text-secondary)] hover:text-[var(--color-text-primary)]'
-						}`}
-					>
-						{batchMode ? t('common.cancel') : t('home.multiSelect')}
-					</button>
+			<header className="sticky top-0 z-10 flex flex-col border-b border-auth-border bg-auth-bg/80 px-4 pb-3 backdrop-blur-md">
+				{/* 行 A：品牌题头（定高行） */}
+				<div className="flex h-[var(--layout-header-height)] items-center gap-2">
+					<ShieldCheck className="h-6 w-6 shrink-0 text-primary-500" />
+					<h1 className="min-w-0 truncate text-lg font-bold text-[var(--color-text-primary)]">{t('home.title')}</h1>
+					<LanguageSwitcher className="ml-auto shrink-0" />
 				</div>
 
-				{/* Search Bar */}
-				<div className="mt-3 flex items-center gap-2">
-					<div className="relative flex-1">
+				{/* 行 B：搜索 + 计数 + 多选 + 视图切换 */}
+				<div className="flex items-center gap-2">
+					<div className="relative min-w-0 flex-1">
 						<Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-[var(--color-text-muted)]" />
 						<input
 							type="text"
@@ -164,9 +170,26 @@ export default function HomePage() {
 							</button>
 						)}
 					</div>
+					<span className="shrink-0 whitespace-nowrap rounded-full bg-primary-500/10 px-2 py-0.5 text-[10px] font-medium text-primary-400">
+						{t('home.accountsCount', { n: accounts.length })}
+					</span>
+					<button
+						onClick={() => {
+							if (batchMode) {
+								exitBatchMode();
+							} else {
+								setBatchMode(true);
+							}
+						}}
+						className={`shrink-0 whitespace-nowrap rounded-lg px-2 py-1 text-xs font-medium transition-colors ${
+							batchMode ? 'bg-primary-600 text-white' : 'text-[var(--color-text-secondary)] hover:text-[var(--color-text-primary)]'
+						}`}
+					>
+						{batchMode ? t('common.cancel') : t('home.multiSelect')}
+					</button>
 					<button
 						onClick={() => setViewMode(viewMode === 'list' ? 'grid' : 'list')}
-						className="rounded-xl border border-auth-border bg-auth-elevated p-2 text-[var(--color-text-secondary)] hover:text-[var(--color-text-primary)]"
+						className="shrink-0 rounded-xl border border-auth-border bg-auth-elevated p-2 text-[var(--color-text-secondary)] hover:text-[var(--color-text-primary)]"
 						aria-label={viewMode === 'list' ? t('home.gridView') : t('home.listView')}
 					>
 						{viewMode === 'list' ? (
@@ -177,8 +200,8 @@ export default function HomePage() {
 					</button>
 				</div>
 
-				{/* Group Filter Chips */}
-				{groups.length > 0 && (
+				{/* 行 C：分组筛选 chips（AU-07：空组保留 + 虚线区分） */}
+				{accounts.length > 0 && groups.length > 0 && (
 					<div className="mt-2 flex gap-1.5 overflow-x-auto pb-1 scrollbar-hide">
 						<button
 							onClick={() => setSelectedGroup(null)}
@@ -190,19 +213,25 @@ export default function HomePage() {
 						>
 							{t('home.filterAll')}
 						</button>
-						{groups.map((g) => (
-							<button
-								key={g}
-								onClick={() => setSelectedGroup(g === selectedGroup ? null : g)}
-								className={`shrink-0 rounded-full px-3 py-1 text-xs font-medium transition-colors ${
-									g === selectedGroup
-										? 'bg-primary-600 text-white'
-										: 'bg-auth-elevated text-[var(--color-text-secondary)] hover:text-[var(--color-text-primary)]'
-								}`}
-							>
-								{g}
-							</button>
-						))}
+						{groups.map((g) => {
+							const isEmpty = !accounts.some((a) => a.group === g);
+							const isActive = g === selectedGroup;
+							return (
+								<button
+									key={g}
+									onClick={() => setSelectedGroup(isActive ? null : g)}
+									className={`shrink-0 rounded-full px-3 py-1 text-xs font-medium transition-colors ${
+										isActive
+											? 'bg-primary-600 text-white'
+											: isEmpty
+												? 'border border-dashed border-auth-border text-[var(--color-text-muted)]'
+												: 'bg-auth-elevated text-[var(--color-text-secondary)] hover:text-[var(--color-text-primary)]'
+									}`}
+								>
+									{groupLabel(t, g)}
+								</button>
+							);
+						})}
 					</div>
 				)}
 			</header>
@@ -233,7 +262,7 @@ export default function HomePage() {
 							<div key={account.id}>
 								<TotpCard
 									account={account}
-									onDelete={removeAccount}
+									onDelete={handleDeleteAccount}
 									onEdit={handleEditAccount}
 									onPin={handlePinAccount}
 									batchMode={batchMode}

@@ -18,7 +18,7 @@ const STATUS_MAP: Record<string, { labelKey: string }> = {
 export default function ActivityPage() {
 	const navigate = useNavigate();
 	const slug = useTenantSlug();
-	const { t } = useTranslation();
+	const { t, i18n } = useTranslation();
 	const [items, setItems] = useState<GeneratedTypes.PushHistoryItem[]>([]);
 	const [loading, setLoading] = useState(true);
 	const [error, setError] = useState<string | null>(null);
@@ -59,7 +59,7 @@ export default function ActivityPage() {
 		if (!iso) return '';
 		try {
 			const d = new Date(iso);
-			return d.toLocaleString('zh-CN', {
+			return d.toLocaleString(i18n.language, {
 				month: 'short',
 				day: 'numeric',
 				hour: '2-digit',

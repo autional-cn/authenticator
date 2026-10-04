@@ -277,4 +277,17 @@ describe('SettingsPage', () => {
 			expect(mockNavigate).toHaveBeenCalledWith('/');
 		});
 	});
+
+	describe('PIN placeholder (AU-15)', () => {
+		it('未启用 PIN → 占位为新建引导「输入 4-8 位数字」', async () => {
+			renderSettings();
+			expect(screen.getByPlaceholderText('输入 4-8 位数字')).toBeInTheDocument();
+		});
+
+		it('已启用 PIN → 占位为修改引导「输入新 PIN 或留空禁用」', async () => {
+			storeState = { ...storeState, hasPin: true };
+			renderSettings();
+			expect(screen.getByPlaceholderText('输入新 PIN 或留空禁用')).toBeInTheDocument();
+		});
+	});
 });

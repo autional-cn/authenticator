@@ -17,6 +17,12 @@ vi.mock('@/lib/totp', () => ({
 	generateTOTP: (...args: unknown[]) => mockGenerateTOTP(...args),
 }));
 
+const { mockShowToast } = vi.hoisted(() => ({ mockShowToast: vi.fn() }));
+vi.mock('@autional-cn/ui', async (importOriginal) => {
+	const actual = await importOriginal<typeof import('@autional-cn/ui')>();
+	return { ...actual, showToast: mockShowToast };
+});
+
 interface MockStoreState {
 	accounts: unknown[];
 	isLoading: boolean;
@@ -78,6 +84,7 @@ function renderHome() {
 
 beforeEach(() => {
 	vi.clearAllMocks();
+	localStorage.clear();
 	mockGenerateTOTP.mockResolvedValue({ code: '123456', remainingSeconds: 25, progress: 0.83 });
 	storeState = {
 		accounts: [],
@@ -276,6 +283,101 @@ describe('HomePage', () => {
 				fireEvent.click(toggleBtn);
 			});
 			expect(screen.getByRole('button', { name: '列表视图' })).toBeInTheDocument();
+		});
+	});
+
+	describe('header layout (AU-02)', () => {
+		beforeEach(() => {
+			storeState = {
+				...storeState,
+				accounts: [
+					{
+						id: '1',
+						name: 'GitHub',
+						username: 'dev@example.com',
+						secret: 'S1',
+						algorithm: 'SHA1',
+						digits: 6,
+						period: 30,
+						createdAt: 1700000000000,
+					},
+				],
+			};
+		});
+
+		it('题头纵排 + h1 truncate + 搜索/计数/多选/视图四元素同在（桌面宽度不砍信息）', async () => {
+			renderHome();
+
+			const header = document.querySelector('header');
+			expect(header?.className).toContain('flex-col');
+
+			const title = screen.getByText('Autional Authenticator');
+			expect(title.className).toContain('truncate');
+
+			expect(screen.getByPlaceholderText('搜索账户...')).toBeInTheDocument();
+			expect(screen.getByText('1 个账户')).toBeInTheDocument();
+			expect(screen.getByText('多选')).toBeInTheDocument();
+			expect(screen.getByRole('button', { name: '网格视图' })).toBeInTheDocument();
+		});
+	});
+
+	describe('empty-group chip (AU-07)', () => {
+		it('曾出现分组（localStorage 播种）在组内无账户时仍保留，且为虚线样式', async () => {
+			localStorage.setItem('authenticator-known-groups', JSON.stringify(['工作']));
+			storeState = {
+				...storeState,
+				accounts: [
+					{
+						id: '1',
+						name: 'GitHub',
+						username: 'dev@example.com',
+						secret: 'S1',
+						algorithm: 'SHA1',
+						digits: 6,
+						period: 30,
+						createdAt: 1700000000000,
+					},
+				],
+			};
+			renderHome();
+
+			const chip = screen.getByText('工作');
+			expect(chip).toBeInTheDocument();
+			expect(chip.className).toContain('border-dashed');
+		});
+	});
+
+	describe('delete feedback (AU-06)', () => {
+		it('卡片浮层确认删除 → removeAccount + showToast（账户已删除），不误触编辑导航', async () => {
+			storeState = {
+				...storeState,
+				accounts: [
+					{
+						id: '1',
+						name: 'GitHub',
+						username: 'dev@example.com',
+						secret: 'S1',
+						algorithm: 'SHA1',
+						digits: 6,
+						period: 30,
+						createdAt: 1700000000000,
+					},
+				],
+			};
+			renderHome();
+
+			await act(async () => {
+				fireEvent.click(screen.getByLabelText('删除账户'));
+			});
+			expect(screen.getByText('确认删除此账户？')).toBeInTheDocument();
+
+			await act(async () => {
+				fireEvent.click(screen.getByText('删除'));
+			});
+
+			expect(storeState.removeAccount).toHaveBeenCalledWith('1');
+			expect(mockShowToast).toHaveBeenCalledWith('账户已删除', 'success');
+			expect(mockNavigate).not.toHaveBeenCalled();
 		});
 	});
 });

@@ -21,18 +21,19 @@ i18n
 		},
 	});
 
-// 同步 <html lang> — 语言切换后更新 documentElement.lang（a11y/浏览器翻译/SEO）
-const syncHtmlLang = (lng: string | undefined) => {
+// 同步 <html lang> 与 document.title — 语言切换后更新（a11y/浏览器翻译/SEO）
+const syncDocumentMeta = () => {
 	if (typeof document !== 'undefined') {
-		document.documentElement.lang = lng || 'zh-CN';
+		document.documentElement.lang = i18n.language || 'zh-CN';
+		document.title = i18n.t('app.title');
 	}
 };
-i18n.on('languageChanged', syncHtmlLang);
-// 初始化完成后立即同步一次（覆盖 index.html 硬编码的 lang）
+i18n.on('languageChanged', syncDocumentMeta);
+// 初始化完成后立即同步一次（覆盖 index.html 硬编码的 lang/title）
 if (i18n.isInitialized) {
-	syncHtmlLang(i18n.language);
+	syncDocumentMeta();
 } else {
-	i18n.on('initialized', syncHtmlLang);
+	i18n.on('initialized', syncDocumentMeta);
 }
 
 export default i18n;

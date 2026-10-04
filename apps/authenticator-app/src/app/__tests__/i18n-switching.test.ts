@@ -7,6 +7,7 @@ import i18n from '../../i18n';
  */
 describe('i18n language switching', () => {
 	const originalLang = document.documentElement.lang;
+	const originalTitle = document.title;
 
 	beforeEach(async () => {
 		await i18n.changeLanguage('zh-CN');
@@ -14,6 +15,7 @@ describe('i18n language switching', () => {
 
 	afterEach(() => {
 		document.documentElement.lang = originalLang;
+		document.title = originalTitle;
 	});
 
 	it('syncs documentElement.lang on language change', async () => {
@@ -40,5 +42,13 @@ describe('i18n language switching', () => {
 		await i18n.changeLanguage('zh-CN');
 		expect(i18n.t('home.multiSelect')).toBe('多选');
 		expect(document.documentElement.lang).toBe('zh-CN');
+	});
+
+	it('syncs document.title with app.title on language change (AU-16③)', async () => {
+		expect(document.title).toBe('Autional 身份验证器');
+		await i18n.changeLanguage('en-US');
+		expect(document.title).toBe('Autional Authenticator');
+		await i18n.changeLanguage('zh-CN');
+		expect(document.title).toBe('Autional 身份验证器');
 	});
 });
