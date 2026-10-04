@@ -37,9 +37,18 @@ export async function registerPushSubscription(sub: PushSubRequest): Promise<voi
 	await pushSubscriptionsPost(sub as unknown as GeneratedTypes.PushSubscriptionRequest);
 }
 
-export async function getPushSubscriptions(): Promise<PushSubRequest[]> {
+// 订阅行（GET /push/subscriptions items；响应经拦截器 PascalCase→camelCase；endpoint 为删除标识）
+export interface PushSubscriptionItem {
+	id?: string;
+	endpoint?: string;
+	deviceName?: string;
+	deviceType?: string;
+	createdAt?: string;
+}
+
+export async function getPushSubscriptions(): Promise<PushSubscriptionItem[]> {
 	const res = await pushSubscriptions();
-	return extractList(res) as PushSubRequest[];
+	return extractList<PushSubscriptionItem>(res);
 }
 
 export async function unregisterPushSubscription(endpoint: string): Promise<void> {

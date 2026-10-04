@@ -53,16 +53,6 @@ export async function getPushHistory(
 	return await GeneratedApi.mfaPushHistory(params);
 }
 
-export async function getTrustedDevices(): Promise<GeneratedTypes.TrustedDeviceListResponse> {
-	return await GeneratedApi.authMeDevices();
-}
-
-export async function revokeTrustedDevice(
-	deviceId: string,
-): Promise<GeneratedTypes.TrustedDeviceDataResponse> {
-	return await GeneratedApi.authMeDevicesTrustByDevicesPut(deviceId, { trusted: false });
-}
-
 export async function getAuthenticatorDevices(): Promise<GeneratedTypes.AuthenticatorDeviceItem[]> {
 	const res = await GeneratedApi.authMeAuthenticatorDevices();
 	return extractList<GeneratedTypes.AuthenticatorDeviceItem>(res);

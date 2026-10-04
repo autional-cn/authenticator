@@ -3,8 +3,7 @@ import { useNavigate } from 'react-router';
 import { useTranslation } from 'react-i18next';
 import { ArrowLeft, Smartphone, Trash2, AlertCircle } from 'lucide-react';
 import { LoadingScreen, ErrorState } from '@autional-cn/ui';
-import { extractList, GeneratedTypes } from '@autional-cn/shared';
-import { getTrustedDevices, revokeTrustedDevice } from '@/lib/api';
+import { getPushSubscriptions, unregisterPushSubscription, type PushSubscriptionItem } from '@/lib/push';
 import BottomNav from '@/components/BottomNav';
 import { toSlugged, useTenantSlug } from '../../lib/slug';
 
@@ -12,15 +11,15 @@ export default function DevicesPage() {
 	const navigate = useNavigate();
 	const slug = useTenantSlug();
 	const { t, i18n } = useTranslation();
-	const [devices, setDevices] = useState<GeneratedTypes.TrustedDeviceItem[]>([]);
+	const [devices, setDevices] = useState<PushSubscriptionItem[]>([]);
 	const [loading, setLoading] = useState(true);
 	const [error, setError] = useState<string | null>(null);
-	const [deletingId, setDeletingId] = useState<string | null>(null);
+	const [deletingEndpoint, setDeletingEndpoint] = useState<string | null>(null);
 
 	useEffect(() => {
-		getTrustedDevices()
-			.then((res) => {
-				setDevices(extractList<GeneratedTypes.TrustedDeviceItem>(res));
+		getPushSubscriptions()
+			.then((items) => {
+				setDevices(items);
 			})
 			.catch((err) => {
 				setError(t('devices.loadFailed'));
@@ -29,18 +28,18 @@ export default function DevicesPage() {
 			.finally(() => setLoading(false));
 	}, [t]);
 
-	const handleDelete = async (id?: string) => {
-		if (!id) return;
+	const handleDelete = async (endpoint?: string) => {
+		if (!endpoint) return;
 		if (!confirm(t('devices.revokeConfirm'))) return;
-		setDeletingId(id);
+		setDeletingEndpoint(endpoint);
 		try {
-			await revokeTrustedDevice(id);
-			setDevices((prev) => prev.filter((d) => d.id !== id));
+			await unregisterPushSubscription(endpoint);
+			setDevices((prev) => prev.filter((d) => d.endpoint !== endpoint));
 		} catch (err) {
 			console.error(err);
 			alert(t('devices.revokeFailed'));
 		} finally {
-			setDeletingId(null);
+			setDeletingEndpoint(null);
 		}
 	};
 
@@ -79,37 +78,32 @@ export default function DevicesPage() {
 					</div>
 				) : (
 					<div className="space-y-2">
-						{devices.map((device) => {
-							// 运行时契约 = identity DeviceResponse json:"ip"（shared 生成物 ipAddress 陈旧）
-							const ip = (device as { ip?: string }).ip;
-							return (
-								<div
-									key={device.id}
-									className="flex items-center gap-3 rounded-xl border border-auth-border bg-auth-surface p-3"
-								>
-									<div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-primary-500/10">
-										<Smartphone className="h-5 w-5 text-primary-400" />
-									</div>
-									<div className="min-w-0 flex-1">
-										<p className="text-sm font-medium text-[var(--color-text-primary)] truncate">
-											{device.deviceName || t('devices.unnamed')}
-										</p>
-										<p className="text-[11px] text-[var(--color-text-muted)]">
-											{formatDate(device.createdAt)}
-											{ip ? ` · ${ip}` : ''}
-										</p>
-									</div>
+						{devices.map((device) => (
+							<div
+								key={device.endpoint ?? device.id}
+								className="flex items-center gap-3 rounded-xl border border-auth-border bg-auth-surface p-3"
+							>
+								<div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-primary-500/10">
+									<Smartphone className="h-5 w-5 text-primary-400" />
+								</div>
+								<div className="min-w-0 flex-1">
+									<p className="text-sm font-medium text-[var(--color-text-primary)] truncate">
+										{device.deviceName || t('devices.unnamed')}
+									</p>
+									<p className="text-[11px] text-[var(--color-text-muted)]">
+										{formatDate(device.createdAt)}
+									</p>
+								</div>
 								<button
-									onClick={() => handleDelete(device.id)}
-									disabled={deletingId === device.id}
+									onClick={() => handleDelete(device.endpoint)}
+									disabled={deletingEndpoint === device.endpoint}
 									className="rounded-lg p-2 text-[var(--color-text-muted)] hover:bg-danger/10 hover:text-danger transition-colors disabled:opacity-50"
 									aria-label={t('devices.revokeTitle')}
 								>
 									<Trash2 className="h-4 w-4" />
 								</button>
 							</div>
-							);
-						})}
+						))}
 					</div>
 				)}
 

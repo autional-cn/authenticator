@@ -1,19 +1,19 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
-import { render, screen, waitFor } from '@testing-library/react';
+import { render, screen, waitFor, fireEvent, act } from '@testing-library/react';
 import { MemoryRouter } from 'react-router';
 
 /**
- * AU-19 回归锁：设备行读运行时契约键 `ip`（identity DeviceResponse json:"ip"）。
- * shared 生成物字段 ipAddress 陈旧 —— 旧码读 ipAddress 时本测试首例即红。
+ * W4/A3：devices 页数据源 = Push 订阅（communication push subscriptions）。
+ * 撤销 = DELETE ?endpoint=（真删持久）；页面不展示 IP（AU-19 随数据源改判）。
  */
-const { mockGetTrustedDevices, mockRevokeTrustedDevice } = vi.hoisted(() => ({
-	mockGetTrustedDevices: vi.fn(),
-	mockRevokeTrustedDevice: vi.fn(),
+const { mockGetPushSubscriptions, mockUnregisterPushSubscription } = vi.hoisted(() => ({
+	mockGetPushSubscriptions: vi.fn(),
+	mockUnregisterPushSubscription: vi.fn(),
 }));
 
-vi.mock('@/lib/api', () => ({
-	getTrustedDevices: (...args: unknown[]) => mockGetTrustedDevices(...args),
-	revokeTrustedDevice: (...args: unknown[]) => mockRevokeTrustedDevice(...args),
+vi.mock('@/lib/push', () => ({
+	getPushSubscriptions: (...args: unknown[]) => mockGetPushSubscriptions(...args),
+	unregisterPushSubscription: (...args: unknown[]) => mockUnregisterPushSubscription(...args),
 }));
 
 vi.mock('@/components/BottomNav', () => ({
@@ -34,42 +34,63 @@ beforeEach(() => {
 	vi.clearAllMocks();
 });
 
-describe('DevicesPage (AU-19)', () => {
-	it('行含运行时 ip 键 → IP 文本可见（读 ipAddress 的旧码为不可见回归锁）', async () => {
-		mockGetTrustedDevices.mockResolvedValue({
-			items: [
-				{
-					id: 'd1',
-					deviceName: 'Chrome',
-					createdAt: '2026-01-05T12:00:00Z',
-					ip: '203.0.113.7',
-				},
-			],
-		});
+describe('DevicesPage (W4/A3 · Push 订阅数据源)', () => {
+	it('订阅行渲染 deviceName + createdAt（非空列表可产生）', async () => {
+		mockGetPushSubscriptions.mockResolvedValue([
+			{
+				id: 'sub-1',
+				endpoint: 'https://push.example/ep-1',
+				deviceName: 'Authenticator Web',
+				deviceType: 'web',
+				createdAt: '2026-01-05T12:00:00Z',
+			},
+		]);
 		renderDevices();
 
 		await waitFor(() => {
-			expect(screen.getByText(/203\.0\.113\.7/)).toBeInTheDocument();
+			expect(screen.getByText('Authenticator Web')).toBeInTheDocument();
+		});
+		expect(screen.getByText(/2026/)).toBeInTheDocument();
+	});
+
+	it('撤销以 endpoint 调用 DELETE 且行消失（真删持久方向）', async () => {
+		mockGetPushSubscriptions.mockResolvedValue([
+			{
+				id: 'sub-1',
+				endpoint: 'https://push.example/ep-1',
+				deviceName: 'Chrome 桌面',
+				deviceType: 'web',
+				createdAt: '2026-01-05T12:00:00Z',
+			},
+		]);
+		mockUnregisterPushSubscription.mockResolvedValue(undefined);
+		const confirmSpy = vi.spyOn(window, 'confirm').mockReturnValue(true);
+		renderDevices();
+
+		await waitFor(() => {
+			expect(screen.getByText('Chrome 桌面')).toBeInTheDocument();
+		});
+
+		await act(async () => {
+			fireEvent.click(screen.getByRole('button', { name: '撤销设备' }));
+		});
+		confirmSpy.mockRestore();
+
+		await waitFor(() => {
+			expect(mockUnregisterPushSubscription).toHaveBeenCalledWith('https://push.example/ep-1');
+		});
+		await waitFor(() => {
+			expect(screen.queryByText('Chrome 桌面')).toBeNull();
 		});
 	});
 
-	it('ip 缺省（仅陈旧 ipAddress）→ 日期行无「 · 」段、陈旧键不渲染', async () => {
-		mockGetTrustedDevices.mockResolvedValue({
-			items: [
-				{
-					id: 'd2',
-					deviceName: 'Firefox',
-					createdAt: '2026-01-05T12:00:00Z',
-					ipAddress: '10.0.0.1',
-				},
-			],
-		});
+	it('空列表 → 空态（empty + emptyHint）', async () => {
+		mockGetPushSubscriptions.mockResolvedValue([]);
 		renderDevices();
 
 		await waitFor(() => {
-			expect(screen.getByText('Firefox')).toBeInTheDocument();
+			expect(screen.getByText('暂无已注册设备')).toBeInTheDocument();
 		});
-		expect(screen.queryByText(/ · /)).toBeNull();
-		expect(screen.queryByText(/10\.0\.0\.1/)).toBeNull();
+		expect(screen.getByText('在设置中启用 Push 通知即可注册')).toBeInTheDocument();
 	});
 });
