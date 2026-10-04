@@ -12,6 +12,7 @@ import {
 	BrandingInitializer,
 } from '@autional-cn/shared';
 import ErrorBoundary from './components/ErrorBoundary';
+import TenantSlugGate from './components/TenantSlugGate';
 import UnlockGate from './components/UnlockScreen';
 import { ToastProvider, LoadingScreen } from '@autional-cn/ui';
 import PwaInstallPrompt from './components/PwaInstallPrompt';
@@ -50,7 +51,10 @@ function LayoutWrapper() {
 	const { tenantSlug } = useParams();
 	return (
 		<TenantSlugProvider value={tenantSlug}>
-			<Outlet />
+			{/* AU-30：已认证未知 slug 全子路由禁渲染真实页（未认证面仍由 RequireAuth 闸门负责） */}
+			<TenantSlugGate notFound={<NotFoundRoute />}>
+				<Outlet />
+			</TenantSlugGate>
 		</TenantSlugProvider>
 	);
 }
