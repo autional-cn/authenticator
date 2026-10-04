@@ -46,8 +46,8 @@ importers:
   apps/authenticator-app:
     dependencies:
       '@autional-cn/shared':
-        specifier: 0.1.0-rc.21
-        version: 0.1.0-rc.21(react-dom@19.2.5(react@19.2.5))(react@19.2.5)(use-sync-external-store@1.7.0(react@19.2.5))
+        specifier: 0.1.0-rc.24
+        version: 0.1.0-rc.24(react-dom@19.2.5(react@19.2.5))(react@19.2.5)(use-sync-external-store@1.7.0(react@19.2.5))
       '@autional-cn/tailwind-preset':
         specifier: 0.1.0-rc.2
         version: 0.1.0-rc.2(tailwindcss@3.4.19)
@@ -155,8 +155,8 @@ packages:
   '@asamuzakjp/nwsapi@2.3.9':
     resolution: {integrity: sha512-n8GuYSrI9bF7FFZ/SjhwevlHc8xaVlb/7HmHelnc/PZXBD2ZR49NnN9sMMuDdEGPeeRQ5d0hqlSlEpgCX3Wl0Q==}
 
-  '@autional-cn/shared@0.1.0-rc.21':
-    resolution: {integrity: sha512-11olaiNwv42B0btNFWywZkgKsMvvy17EoW61I/PwUYgWNkVGX/0M3n/ONoYFNBZL+l0D+Zx8PLOlf3/kQHFveg==}
+  '@autional-cn/shared@0.1.0-rc.24':
+    resolution: {integrity: sha512-Y948vsjt+od4Ygor2AZAyykax6OESbJ8wNSWg3+3BSpMLDS/M6PFLVF1y1eP+A391b895VK9ycwHXgh8RwGovg==}
     peerDependencies:
       react: 19.2.5
       react-dom: 19.2.5
@@ -1786,7 +1786,6 @@ packages:
   glob@11.1.0:
     resolution: {integrity: sha512-vuNwKSaKiqm7g0THUBu2x7ckSs3XJLXE+2ssL7/MfTGPLLcrJQ/4Uq1CjPTtO5cCIiRxqvN6Twy1qOwhL0Xjcw==}
     engines: {node: 20 || >=22}
-    deprecated: Old versions of glob are not supported, and contain widely publicized security vulnerabilities, which have been fixed in the current version. Please update. Support for old versions may be purchased (at exorbitant rates) by contacting i@izs.me
     hasBin: true
 
   glob@13.0.6:
@@ -2982,7 +2981,7 @@ snapshots:
 
   '@asamuzakjp/nwsapi@2.3.9': {}
 
-  '@autional-cn/shared@0.1.0-rc.21(react-dom@19.2.5(react@19.2.5))(react@19.2.5)(use-sync-external-store@1.7.0(react@19.2.5))':
+  '@autional-cn/shared@0.1.0-rc.24(react-dom@19.2.5(react@19.2.5))(react@19.2.5)(use-sync-external-store@1.7.0(react@19.2.5))':
     dependencies:
       '@opentelemetry/api': 1.9.1
       '@tanstack/react-query': 5.100.9(react@19.2.5)
@@ -3877,7 +3876,7 @@ snapshots:
   '@rollup/plugin-replace@6.0.3(rollup@4.63.5)':
     dependencies:
       '@rollup/pluginutils': 5.4.0(rollup@4.63.5)
-      magic-string: 0.30.21
+      magic-string: 0.30.17
     optionalDependencies:
       rollup: 4.63.5
 
