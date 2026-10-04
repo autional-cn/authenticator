@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from 'react';
 import { Camera } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
+import type { TFunction } from 'i18next';
 import type { Html5Qrcode } from 'html5-qrcode';
 import {
 	isOtpauthMigrationUri,
@@ -28,9 +29,23 @@ interface QrScannerProps {
 	onMigration?: (accounts: MigratedAccount[]) => void;
 	onScanLogin?: (result: LoginScanResult) => void;
 	onError?: (error: string) => void;
+	/** 降级出路：一键切手动输入（无摄像头/拒权/引擎 hang 时展示） */
+	onManualFallback?: () => void;
 }
 
-export default function QrScanner({ onScan, onMigration, onScanLogin, onError }: QrScannerProps) {
+/** 摄像头启动超时护栏（ms）：引擎 hang 时 ≤ 此时间退出 spinner 进入诚实错误态。audit 观察 5s+ 永转；8s 防慢机型误杀。 */
+export const SCANNER_START_TIMEOUT_MS = 8000;
+
+/** 错误 → 本地化文案映射（兜底终止英文/技术文案外泄）。 */
+function mapCameraError(err: unknown, t: TFunction): string {
+	const msg = err instanceof Error ? err.message : String(err);
+	if (msg === 'scanner-start-timeout') return t('qr.cameraTimeout');
+	if (/permission|notallowed|denied/i.test(msg)) return t('qr.cameraPermissionDenied');
+	if (/notfound|no camera|not found/i.test(msg)) return t('qr.noCamera');
+	return t('qr.cameraFailed');
+}
+
+export default function QrScanner({ onScan, onMigration, onScanLogin, onError, onManualFallback }: QrScannerProps) {
 	const containerRef = useRef<HTMLDivElement>(null);
 	const scannerRef = useRef<Html5Qrcode | null>(null);
 	const [isLoading, setIsLoading] = useState(true);
@@ -78,51 +93,61 @@ export default function QrScanner({ onScan, onMigration, onScanLogin, onError }:
 				const scanner = new Html5Qrcode(scannerId);
 				scannerRef.current = scanner;
 
-				await scanner.start(
-					{ facingMode: 'environment' },
-					{
-						fps: 10,
-						qrbox: { width: 200, height: 200 },
-					},
-					(decodedText: string) => {
-						const cb = callbacksRef.current;
-						if (isOtpauthMigrationUri(decodedText)) {
-							const accounts = parseOtpauthMigration(decodedText);
-							if (accounts.length > 0) {
-								cb.onMigration?.(accounts);
-								void stopScanner();
-							} else {
-								cb.onError?.(cb.t('qr.migrationParseError'));
+				// AU-04：超时竞速 —— scanner.start 是重操作，无摄像头/引擎 hang 时可能永不 settle，
+				// 竞速 reject（'scanner-start-timeout'）落回 catch 走诚实错误态 + 手动输入出路。
+				await Promise.race([
+					scanner.start(
+						{ facingMode: 'environment' },
+						{
+							fps: 10,
+							qrbox: { width: 200, height: 200 },
+						},
+						(decodedText: string) => {
+							const cb = callbacksRef.current;
+							if (isOtpauthMigrationUri(decodedText)) {
+								const accounts = parseOtpauthMigration(decodedText);
+								if (accounts.length > 0) {
+									cb.onMigration?.(accounts);
+									void stopScanner();
+								} else {
+									cb.onError?.(cb.t('qr.migrationParseError'));
+								}
+								return;
 							}
-							return;
-						}
-						const parsed = parseOtpAuthUrl(decodedText);
-						if (parsed) {
-							cb.onScan(parsed);
-							void stopScanner();
-							return;
-						}
-						const loginChallenge = parseAutionalLoginUri(decodedText);
-						if (loginChallenge) {
-							cb.onScanLogin?.(loginChallenge);
-							void stopScanner();
-							return;
-						}
-						cb.onError?.(cb.t('qr.unrecognized'));
-					},
-					() => {
-						// QR scan error (no QR in frame) — ignore
-					},
-				);
+							const parsed = parseOtpAuthUrl(decodedText);
+							if (parsed) {
+								cb.onScan(parsed);
+								void stopScanner();
+								return;
+							}
+							const loginChallenge = parseAutionalLoginUri(decodedText);
+							if (loginChallenge) {
+								cb.onScanLogin?.(loginChallenge);
+								void stopScanner();
+								return;
+							}
+							cb.onError?.(cb.t('qr.unrecognized'));
+						},
+						() => {
+							// QR scan error (no QR in frame) — ignore
+						},
+					),
+					new Promise<never>((_, reject) =>
+						setTimeout(
+							() => reject(new Error('scanner-start-timeout')),
+							SCANNER_START_TIMEOUT_MS,
+						),
+					),
+				]);
 
 				if (!cancelled) {
 					setIsLoading(false);
 				}
 			} catch (err) {
 				if (!cancelled) {
-					const msg =
-						err instanceof Error ? err.message : callbacksRef.current.t('qr.cameraFailed');
-					setError(msg);
+					// 先停底层（防超时后晚到的初始化把摄像头留在运行态），再置诚实错误态
+					void stopScanner();
+					setError(mapCameraError(err, callbacksRef.current.t));
 					setHasCamera(false);
 					setIsLoading(false);
 				}
@@ -143,6 +168,15 @@ export default function QrScanner({ onScan, onMigration, onScanLogin, onError }:
 				<Camera className="mb-3 h-10 w-10 text-[var(--color-text-muted)]" />
 				<p className="mb-1 text-sm font-medium text-[var(--color-text-secondary)]">{t('qr.noCamera')}</p>
 				<p className="max-w-[240px] text-xs text-[var(--color-text-muted)]">{error}</p>
+				{onManualFallback && (
+					<button
+						type="button"
+						onClick={onManualFallback}
+						className="mt-4 rounded-xl bg-primary-600 px-5 py-2.5 text-sm font-medium text-white hover:bg-primary-500"
+					>
+						{t('qr.manualFallback')}
+					</button>
+				)}
 			</div>
 		);
 	}

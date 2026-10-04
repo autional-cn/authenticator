@@ -1,0 +1,70 @@
+import { describe, it, expect, vi, beforeEach } from 'vitest';
+import { render, screen, fireEvent, act, waitFor } from '@testing-library/react';
+import { MemoryRouter } from 'react-router';
+
+/**
+ * AU-26 回归锁：push-approve 错误态两枚真实出路 ——
+ * 「重试」= 真 GET（调用计数 +1）；无 challengeId 时不给假重试；「返回首页」href="/"。
+ */
+const mockGetPushChallengeStatus = vi.fn();
+vi.mock('../../lib/push', () => ({
+	approvePushChallenge: vi.fn(),
+	denyPushChallenge: vi.fn(),
+	getPushChallengeStatus: (...args: unknown[]) => mockGetPushChallengeStatus(...args),
+}));
+
+import PushApprovePage from '../push-approve/page';
+
+function renderPage(entry: string) {
+	return render(
+		<MemoryRouter initialEntries={[entry]}>
+			<PushApprovePage />
+		</MemoryRouter>,
+	);
+}
+
+beforeEach(() => {
+	vi.clearAllMocks();
+});
+
+describe('PushApprovePage (AU-26)', () => {
+	it('T1 加载失败 → 错误态同时渲染「重试」「返回首页」两枚出路', async () => {
+		mockGetPushChallengeStatus.mockRejectedValue(new Error('boom'));
+		renderPage('/push-approve?challengeId=c1');
+
+		await waitFor(() => {
+			expect(screen.getByText('重试')).toBeInTheDocument();
+		});
+		expect(screen.getByText('返回首页')).toBeInTheDocument();
+	});
+
+	it('T2 点「重试」→ 真实再发 getPushChallengeStatus（假重试回归锁）', async () => {
+		mockGetPushChallengeStatus.mockRejectedValue(new Error('boom'));
+		renderPage('/push-approve?challengeId=c1');
+		await waitFor(() => expect(mockGetPushChallengeStatus).toHaveBeenCalledTimes(1));
+
+		await act(async () => {
+			fireEvent.click(screen.getByText('重试'));
+		});
+		await waitFor(() => expect(mockGetPushChallengeStatus).toHaveBeenCalledTimes(2));
+	});
+
+	it('T3 无 challengeId → 不渲染重试按钮（不可重试的「重试」不造假），仅返回首页', async () => {
+		renderPage('/push-approve');
+
+		await waitFor(() => {
+			expect(screen.getByText('No challenge ID provided')).toBeInTheDocument();
+		});
+		expect(screen.queryByText('重试')).toBeNull();
+		expect(screen.getByText('返回首页')).toBeInTheDocument();
+		expect(mockGetPushChallengeStatus).not.toHaveBeenCalled();
+	});
+
+	it('T4 返回首页链接 href="/"', async () => {
+		mockGetPushChallengeStatus.mockRejectedValue(new Error('boom'));
+		renderPage('/push-approve?challengeId=c1');
+
+		await waitFor(() => expect(screen.getByText('返回首页')).toBeInTheDocument());
+		expect(screen.getByText('返回首页').closest('a')).toHaveAttribute('href', '/');
+	});
+});

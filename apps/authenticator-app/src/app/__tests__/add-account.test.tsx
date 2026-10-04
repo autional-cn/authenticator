@@ -34,11 +34,16 @@ interface MockQrScannerProps {
 	onScan?: (result: unknown) => void;
 	onMigration?: (accounts: unknown[]) => void;
 	onError?: (error: string) => void;
+	onManualFallback?: () => void;
 }
 vi.mock('@/components/QrScanner', () => ({
-	default: (_props: MockQrScannerProps) => (
+	default: (props: MockQrScannerProps) => (
 		<div data-testid="qr-scanner">
 			<p>将二维码对准扫描框</p>
+			{/* AU-04 集成探针：暴露降级 CTA 触发通道 */}
+			<button type="button" onClick={() => props.onManualFallback?.()}>
+				manual-fallback-stub
+			</button>
 		</div>
 	),
 }));
@@ -248,6 +253,19 @@ describe('AddAccountPage', () => {
 			const manualTab = screen.getByText('手动输入');
 			await act(async () => {
 				fireEvent.click(manualTab);
+			});
+			expect(screen.getByLabelText(/服务名称/)).toBeInTheDocument();
+		});
+
+		it('AU-04 降级集成：QrScanner onManualFallback 触发 → 切回手动输入 tab', async () => {
+			renderAddAccount();
+			await act(async () => {
+				fireEvent.click(screen.getByText('二维码'));
+			});
+			expect(screen.getByTestId('qr-scanner')).toBeInTheDocument();
+
+			await act(async () => {
+				fireEvent.click(screen.getByRole('button', { name: 'manual-fallback-stub' }));
 			});
 			expect(screen.getByLabelText(/服务名称/)).toBeInTheDocument();
 		});

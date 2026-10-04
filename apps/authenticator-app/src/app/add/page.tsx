@@ -312,6 +312,7 @@ export default function AddAccountPage() {
 							showToast(t('add.migrationTitle', { n: accounts.length }), 'success');
 						}}
 						onError={(err) => showToast(err, 'error')}
+						onManualFallback={() => setTab('manual')}
 					/>
 				)}
 

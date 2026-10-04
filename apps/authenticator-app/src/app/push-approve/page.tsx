@@ -5,8 +5,9 @@
  * Displays the push challenge details and allows approve/deny.
  */
 
-import { useEffect, useState } from 'react';
-import { useSearchParams } from 'react-router';
+import { useCallback, useEffect, useState } from 'react';
+import { Link, useSearchParams } from 'react-router';
+import { useTranslation } from 'react-i18next';
 import { ShieldCheck, ShieldX, AlertTriangle } from 'lucide-react';
 import {
 	approvePushChallenge,
@@ -17,6 +18,7 @@ import {
 import { extractApiErrorMessage } from '@autional-cn/shared';
 
 export default function PushApprovePage() {
+	const { t } = useTranslation();
 	const [searchParams] = useSearchParams();
 	const challengeId = searchParams.get('challengeId') || '';
 	const urlNumberMatching = searchParams.get('numberMatching') || '';
@@ -27,25 +29,33 @@ export default function PushApprovePage() {
 	const [actionLoading, setActionLoading] = useState(false);
 	const [result, setResult] = useState<'approved' | 'denied' | null>(null);
 
-	useEffect(() => {
+	// AU-26：抽为可重取回调 —— 错误态「重试」= 真实 GET（非假转态）
+	const loadChallenge = useCallback(async () => {
+		setLoading(true);
+		setError(null);
+
 		if (!challengeId) {
 			setError('No challenge ID provided');
 			setLoading(false);
 			return;
 		}
 
-		getPushChallengeStatus(challengeId)
-			.then((data) => {
-				setChallenge(data);
-				if (data.status !== 'pending') {
-					setResult(data.status === 'approved' ? 'approved' : 'denied');
-				}
-			})
-			.catch((err) => {
-				setError(err?.message || 'Failed to load challenge');
-			})
-			.finally(() => setLoading(false));
+		try {
+			const data = await getPushChallengeStatus(challengeId);
+			setChallenge(data);
+			if (data.status !== 'pending') {
+				setResult(data.status === 'approved' ? 'approved' : 'denied');
+			}
+		} catch (err) {
+			setError(extractApiErrorMessage(err, 'Failed to load challenge'));
+		} finally {
+			setLoading(false);
+		}
 	}, [challengeId]);
+
+	useEffect(() => {
+		void loadChallenge();
+	}, [loadChallenge]);
 
 	const handleApprove = async () => {
 		if (!challengeId) return;
@@ -95,6 +105,23 @@ export default function PushApprovePage() {
 						Error
 					</h1>
 					<p className="text-center text-gray-600 dark:text-[var(--color-text-secondary)]">{error}</p>
+					{/* AU-26：两枚真实出路 —— 有 challengeId 才给真重试（不可重试的「重试」不造假） */}
+					<div className="mt-6 flex flex-col gap-3">
+						{challengeId && (
+							<button
+								onClick={() => void loadChallenge()}
+								className="rounded-lg bg-blue-600 dark:bg-primary-600 px-4 py-3 font-medium text-white transition hover:bg-blue-700 dark:hover:bg-primary-500"
+							>
+								{t('common.retry')}
+							</button>
+						)}
+						<Link
+							to="/"
+							className="rounded-lg border border-gray-300 dark:border-auth-border bg-white dark:bg-auth-elevated px-4 py-3 font-medium text-gray-700 dark:text-[var(--color-text-secondary)] transition hover:bg-gray-50 dark:hover:bg-auth-border"
+						>
+							{t('notFound.backHome')}
+						</Link>
+					</div>
 				</div>
 			</div>
 		);
