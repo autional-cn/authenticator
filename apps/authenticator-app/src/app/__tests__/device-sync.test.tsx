@@ -1,5 +1,5 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
-import { render, screen, fireEvent, act } from '@testing-library/react';
+import { render, screen, fireEvent, act, waitFor } from '@testing-library/react';
 import { MemoryRouter } from 'react-router';
 
 const mockNavigate = vi.fn();
@@ -24,6 +24,9 @@ vi.mock('@/lib/store', () => ({
 
 const mockRefetch = vi.fn();
 const mockSync = vi.fn();
+const mockRemove = vi.fn();
+const mockShowToast = vi.fn();
+let mockRemoveError: string | null = null;
 interface MockDevice {
 	id: string;
 	deviceName: string;
@@ -63,6 +66,15 @@ vi.mock('@/hooks/use-cloud-backup', () => ({
 		syncing: false,
 		error: null,
 	}),
+	useDeleteSyncDevice: () => ({
+		remove: mockRemove,
+		removing: false,
+		error: mockRemoveError,
+	}),
+}));
+
+vi.mock('@autional-cn/ui', () => ({
+	showToast: (...args: unknown[]) => mockShowToast(...args),
 }));
 
 import DeviceSyncPage from '../device-sync/page';
@@ -77,10 +89,14 @@ function renderPage() {
 
 beforeEach(() => {
 	vi.clearAllMocks();
+	mockSync.mockReset();
+	mockRemove.mockReset();
+	mockShowToast.mockReset();
 	storeState = { accounts: [] };
 	mockDevices = [];
 	mockLoading = false;
 	mockError = null;
+	mockRemoveError = null;
 });
 
 describe('DeviceSyncPage', () => {
@@ -214,5 +230,102 @@ describe('DeviceSyncPage', () => {
 	it('shows security note', async () => {
 		renderPage();
 		expect(screen.getByText(/服务器加密存储/)).toBeInTheDocument();
+	});
+
+	describe('AU-21 上限自恢复', () => {
+		it('T1 同步 reject 61040100 → 上限提示 toast（直读本次错误）', async () => {
+			storeState.accounts = [{ id: '1', name: 'Test', username: 'u', secret: 'S1' }];
+			mockSync.mockRejectedValueOnce({
+				response: { status: 400, data: { code: '61040100', title: 'device limit exceeded' } },
+			});
+			renderPage();
+			await act(async () => {
+				fireEvent.click(screen.getByText('同步本设备').closest('button')!);
+			});
+			await waitFor(() => {
+				expect(mockShowToast).toHaveBeenCalledWith(
+					'已达 5 台同步设备上限。请先移除不再使用的设备，或在本设备上重新同步（同一设备将原地更新）',
+					'error',
+				);
+			});
+		});
+
+		it('T2a 解绑确认 → remove(id) + refetch + 成功 toast', async () => {
+			mockDevices = [
+				{
+					id: 'dev-1',
+					deviceName: 'iPhone 15',
+					deviceFingerprint: 'a1b2c3d4e5f6g7h8',
+					lastSyncAt: '2025-01-15T08:00:00.000Z',
+					accountCount: 2,
+				},
+			];
+			mockRemove.mockResolvedValueOnce(undefined);
+			const confirmSpy = vi.spyOn(window, 'confirm').mockReturnValue(true);
+			renderPage();
+			await act(async () => {
+				fireEvent.click(screen.getByRole('button', { name: '移除' }));
+			});
+			confirmSpy.mockRestore();
+			await waitFor(() => {
+				expect(mockRemove).toHaveBeenCalledWith('dev-1');
+			});
+			expect(mockRefetch).toHaveBeenCalled();
+			expect(mockShowToast).toHaveBeenCalledWith('已移除该设备', 'success');
+		});
+
+		it('T2b 取消确认 → 零删除请求、零 toast', async () => {
+			mockDevices = [
+				{
+					id: 'dev-1',
+					deviceName: 'iPhone 15',
+					deviceFingerprint: 'a1b2c3d4e5f6g7h8',
+					lastSyncAt: '2025-01-15T08:00:00.000Z',
+					accountCount: 2,
+				},
+			];
+			const confirmSpy = vi.spyOn(window, 'confirm').mockReturnValue(false);
+			renderPage();
+			await act(async () => {
+				fireEvent.click(screen.getByRole('button', { name: '移除' }));
+			});
+			confirmSpy.mockRestore();
+			expect(mockRemove).not.toHaveBeenCalled();
+			expect(mockShowToast).not.toHaveBeenCalled();
+		});
+
+		it('T3 行内解绑按钮：aria-label 到位 / id 空不渲染 / capNote 前置告知 / 失败回退文案', async () => {
+			mockDevices = [
+				{
+					id: '',
+					deviceName: 'NoIdDevice',
+					deviceFingerprint: 'fp-no-id',
+					lastSyncAt: '2025-01-15T08:00:00.000Z',
+					accountCount: 1,
+				},
+				{
+					id: 'dev-9',
+					deviceName: 'iPhone 15',
+					deviceFingerprint: 'fp-nine',
+					lastSyncAt: '2025-01-15T08:00:00.000Z',
+					accountCount: 2,
+				},
+			];
+			renderPage();
+			expect(screen.getByText('每账号最多同步 5 台设备')).toBeInTheDocument();
+			const removeButtons = screen.getAllByRole('button', { name: '移除' });
+			expect(removeButtons).toHaveLength(1);
+
+			mockRemove.mockRejectedValueOnce(new Error('boom'));
+			const confirmSpy = vi.spyOn(window, 'confirm').mockReturnValue(true);
+			await act(async () => {
+				fireEvent.click(removeButtons[0]);
+			});
+			confirmSpy.mockRestore();
+			await waitFor(() => {
+				expect(mockRemove).toHaveBeenCalledWith('dev-9');
+			});
+			expect(mockShowToast).toHaveBeenCalledWith('移除设备失败', 'error');
+		});
 	});
 });

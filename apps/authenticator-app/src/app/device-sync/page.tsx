@@ -10,9 +10,11 @@ import {
 	Check,
 	Wifi,
 	Clock,
+	Trash2,
 } from 'lucide-react';
+import { extractApiError } from '@autional-cn/shared';
 import { useAuthenticatorStore } from '@/lib/store';
-import { useDeviceSyncList, useSyncDevice } from '@/hooks/use-cloud-backup';
+import { useDeviceSyncList, useSyncDevice, useDeleteSyncDevice } from '@/hooks/use-cloud-backup';
 import { showToast } from '@autional-cn/ui';
 import BottomNav from '@/components/BottomNav';
 import { toSlugged, useTenantSlug } from '../../lib/slug';
@@ -24,6 +26,7 @@ export default function DeviceSyncPage() {
 	const { accounts } = useAuthenticatorStore();
 	const { devices, loading, error, refetch } = useDeviceSyncList();
 	const { sync, syncing, error: syncError } = useSyncDevice();
+	const { remove, error: removeError } = useDeleteSyncDevice();
 	const [syncSuccess, setSyncSuccess] = useState(false);
 
 	const handleSync = async () => {
@@ -39,8 +42,22 @@ export default function DeviceSyncPage() {
 			showToast(t('deviceSync.success'), 'success');
 			refetch();
 			setTimeout(() => setSyncSuccess(false), 3000);
+		} catch (err: unknown) {
+			// AU-21：直读本次错误（修 stale-read —— 首败时旧闭包 syncError 恒 null）
+			const { code, message } = extractApiError(err, t('deviceSync.syncFailed'));
+			showToast(String(code) === '61040100' ? t('deviceSync.limitReachedHint') : message, 'error');
+		}
+	};
+
+	const handleRemove = async (id?: string) => {
+		if (!id) return;
+		if (!confirm(t('deviceSync.removeConfirm'))) return;
+		try {
+			await remove(id);
+			showToast(t('deviceSync.removed'), 'success');
+			refetch();
 		} catch {
-			showToast(syncError || t('settings.pushFailed'), 'error');
+			showToast(removeError || t('deviceSync.removeFailed'), 'error');
 		}
 	};
 
@@ -93,6 +110,7 @@ export default function DeviceSyncPage() {
 					<h2 className="mb-2 text-xs font-semibold uppercase tracking-wider text-[var(--color-text-muted)]">
 						{t('deviceSync.list')}
 					</h2>
+					<p className="mb-2 text-[11px] text-[var(--color-text-muted)]">{t('deviceSync.capNote')}</p>
 					<div className="rounded-xl border border-auth-border bg-auth-surface">
 						{loading ? (
 							<div className="flex items-center justify-center py-12">
@@ -135,6 +153,16 @@ export default function DeviceSyncPage() {
 												)}
 											</div>
 										</div>
+										{device.id && (
+											<button
+												type="button"
+												onClick={() => handleRemove(device.id)}
+												aria-label={t('deviceSync.remove')}
+												className="rounded-lg p-1.5 text-[var(--color-text-muted)] transition-colors hover:text-danger"
+											>
+												<Trash2 className="h-4 w-4" />
+											</button>
+										)}
 										<div
 											className="flex h-2 w-2 shrink-0 rounded-full bg-success"
 											title={t('deviceSync.synced')}

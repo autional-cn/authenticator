@@ -4,7 +4,7 @@
  * Uses @autional-cn/shared GeneratedApi for backend communication.
  */
 
-import { GeneratedApi, GeneratedTypes } from '@autional-cn/shared';
+import { apiClient, GeneratedApi, GeneratedTypes } from '@autional-cn/shared';
 import { extractList } from '@autional-cn/shared';
 
 export async function getCurrentUser(): Promise<GeneratedTypes.UserWithIdentitiesResponse> {
@@ -89,4 +89,13 @@ export async function syncDevice(
 	data: GeneratedTypes.DeviceSyncRequest,
 ): Promise<GeneratedTypes.DeviceSyncResponse> {
 	return await GeneratedApi.mfaDevicesSyncPost(data);
+}
+
+/**
+ * DELETE 解绑同步设备（AU-21 W2）。
+ * rc.21 生成物无 mfaDevicesSync DELETE，走 apiClient（同拦截器/信封语义），
+ * URL 字面量与生成物同构（generated/api.ts mfaDevicesSync*）。
+ */
+export async function deleteSyncDevice(syncId: string): Promise<void> {
+	await apiClient.delete(`/mfa/api/v1/mfa/devices/sync/${syncId}`);
 }

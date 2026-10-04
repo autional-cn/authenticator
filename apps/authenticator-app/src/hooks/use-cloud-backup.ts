@@ -1,8 +1,14 @@
 import { useState, useEffect, useCallback } from 'react';
 import { useTranslation } from 'react-i18next';
-import { extractItem, extractList, extractApiErrorMessage } from '@autional-cn/shared';
+import { extractItem, extractList, extractApiErrorMessage, extractApiError } from '@autional-cn/shared';
 import type { TotpAccount } from '@/lib/store';
-import { getCloudBackups, uploadCloudBackup, getDeviceSyncList, syncDevice } from '@/lib/api';
+import {
+	getCloudBackups,
+	uploadCloudBackup,
+	getDeviceSyncList,
+	syncDevice,
+	deleteSyncDevice,
+} from '@/lib/api';
 import {
 	encryptWithKey,
 	decryptWithKey,
@@ -244,7 +250,13 @@ export function useSyncDevice() {
 					totpDevices: plainJson,
 				});
 			} catch (err: unknown) {
-				setError(extractApiErrorMessage(err, t('deviceSync.syncFailed')));
+				// AU-21：上限错误（HTTP 400 / code 61040100）→ 可行动提示（去重/解绑自恢复）
+				const { code } = extractApiError(err, t('deviceSync.syncFailed'));
+				if (String(code) === '61040100') {
+					setError(t('deviceSync.limitReachedHint'));
+				} else {
+					setError(extractApiErrorMessage(err, t('deviceSync.syncFailed')));
+				}
 				throw err;
 			} finally {
 				setSyncing(false);
@@ -254,6 +266,31 @@ export function useSyncDevice() {
 	);
 
 	return { sync, syncing, error };
+}
+
+/** DELETE 解绑同步设备（AU-21：上限后可自恢复的第二出路）。 */
+export function useDeleteSyncDevice() {
+	const { t } = useTranslation();
+	const [removing, setRemoving] = useState(false);
+	const [error, setError] = useState<string | null>(null);
+
+	const remove = useCallback(
+		async (id: string) => {
+			setRemoving(true);
+			setError(null);
+			try {
+				await deleteSyncDevice(id);
+			} catch (err: unknown) {
+				setError(extractApiErrorMessage(err, t('deviceSync.removeFailed')));
+				throw err;
+			} finally {
+				setRemoving(false);
+			}
+		},
+		[t],
+	);
+
+	return { remove, removing, error };
 }
 
 async function computeSHA256(input: string): Promise<string> {
