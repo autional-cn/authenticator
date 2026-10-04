@@ -51,7 +51,11 @@ async function bootstrap() {
 			<StrictMode>
 				<QueryClientProvider client={queryClient}>
 					<BrowserRouter basename="/">
-						<ThemeProvider storageKey="authenticator-app-theme">
+						<ThemeProvider
+							storageKey="authenticator-app-theme"
+							darkThemeName="authenticator"
+							defaultTheme="dark"
+						>
 							<ErrorBoundary>
 								<App />
 							</ErrorBoundary>

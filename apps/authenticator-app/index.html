@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="zh-CN">
+<html lang="zh-CN" class="dark" data-theme="authenticator">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -19,8 +19,24 @@
     <meta name="description" content="Autional 身份验证器 —— 基于 TOTP 与通行密钥的两步验证。" />
     <title>Autional 身份验证器</title>
       <script src="/env.js"></script>
+      <script>
+        (function () {
+          try {
+            var saved = localStorage.getItem('authenticator-app-theme');
+            var dark = saved !== 'light'; /* dark-first：无存储或非法值 → 深色 */
+            var root = document.documentElement;
+            if (dark) {
+              root.classList.add('dark');
+              root.setAttribute('data-theme', 'authenticator');
+            } else {
+              root.classList.remove('dark');
+              root.setAttribute('data-theme', 'light');
+            }
+          } catch (e) { /* 存储不可用：保持 html 静态属性（深色） */ }
+        })();
+      </script>
   </head>
-  <body class="min-h-screen antialiased bg-auth-bg text-neutral-0">
+  <body class="min-h-screen antialiased bg-auth-bg">
     <div id="root"></div>
     <script type="module" src="/src/main.tsx"></script>
   </body>

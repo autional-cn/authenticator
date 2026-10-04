@@ -5,6 +5,7 @@ const config: Config = {
   darkMode: 'class',
   presets: [preset],
   content: [
+    './index.html',
     './src/**/*.{js,ts,jsx,tsx,mdx}',
     './node_modules/@autional-cn/ui/src/**/*.{js,ts,jsx,tsx}',
   ],

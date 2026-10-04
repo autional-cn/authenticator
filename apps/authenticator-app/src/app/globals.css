@@ -9,6 +9,7 @@
     background-color: var(--color-bg-primary);
   }
   body {
+    color: var(--color-text-primary);
     overscroll-behavior-y: none;
     -webkit-tap-highlight-color: transparent;
   }
