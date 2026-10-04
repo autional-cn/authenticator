@@ -28,14 +28,14 @@ export default function ErrorBoundary({ children }: Props) {
 			<div className="mb-4 flex h-16 w-16 items-center justify-center rounded-2xl bg-rose-50 dark:bg-rose-900/20">
 				<AlertTriangle className="h-8 w-8 text-rose-600" />
 			</div>
-			<h2 className="mb-2 text-lg font-semibold text-neutral-900 dark:text-neutral-100">
+			<h2 className="mb-2 text-lg font-semibold text-[var(--color-text-primary)] dark:text-[var(--color-text-primary)]">
 				{t('error.title')}
 			</h2>
-			<p className="mb-1 max-w-xs text-sm text-neutral-500 dark:text-neutral-400">
+			<p className="mb-1 max-w-xs text-sm text-[var(--color-text-muted)] dark:text-[var(--color-text-secondary)]">
 				{t('error.description')}
 			</p>
 			{isDev && (
-				<details className="mt-4 max-w-lg text-left text-xs text-neutral-500 dark:text-neutral-400">
+				<details className="mt-4 max-w-lg text-left text-xs text-[var(--color-text-muted)] dark:text-[var(--color-text-secondary)]">
 					<summary className="cursor-pointer">{t('error.detailsDev')}</summary>
 					<p className="mt-2">{t('error.viewConsole')}</p>
 				</details>
@@ -49,7 +49,7 @@ export default function ErrorBoundary({ children }: Props) {
 				</button>
 				<button
 					onClick={handleHardReset}
-					className="rounded-xl border border-neutral-200 px-5 py-2.5 text-sm font-medium text-neutral-700 hover:bg-neutral-50 dark:border-neutral-700 dark:text-neutral-300 dark:hover:bg-neutral-700 transition-colors"
+					className="rounded-xl border border-neutral-200 px-5 py-2.5 text-sm font-medium text-[var(--color-text-secondary)] hover:bg-neutral-50 dark:border-neutral-700 dark:text-[var(--color-text-secondary)] dark:hover:bg-neutral-700 transition-colors"
 				>
 					{t('error.resetData')}
 				</button>

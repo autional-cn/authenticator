@@ -44,11 +44,11 @@ export default function SettingsSecurityScore({
 								strokeLinecap="round"
 							/>
 						</svg>
-						<span className="absolute text-xs font-bold text-neutral-0">{securityScore}</span>
+						<span className="absolute text-xs font-bold text-[var(--color-text-primary)]">{securityScore}</span>
 					</div>
 					<div>
-						<h2 className="text-sm font-semibold text-neutral-0">{t('settings.securityScore')}</h2>
-						<p className="text-xs text-neutral-400">
+						<h2 className="text-sm font-semibold text-[var(--color-text-primary)]">{t('settings.securityScore')}</h2>
+						<p className="text-xs text-[var(--color-text-secondary)]">
 							{securityScore >= 80
 								? t('settings.scoreGreat')
 								: securityScore >= 50
@@ -76,8 +76,8 @@ function ScoreItem({ label, value, max }: { label: string; value: number; max: n
 	const pct = Math.min(100, Math.round((value / max) * 100));
 	return (
 		<div className="rounded-lg bg-auth-elevated p-2 text-center">
-			<p className="text-lg font-bold text-neutral-0">{value}</p>
-			<p className="text-[10px] text-neutral-500">{label}</p>
+			<p className="text-lg font-bold text-[var(--color-text-primary)]">{value}</p>
+			<p className="text-[10px] text-[var(--color-text-muted)]">{label}</p>
 			<div className="mt-1 h-1 w-full rounded-full bg-auth-border overflow-hidden">
 				<div
 					className={`h-full rounded-full ${pct >= 100 ? 'bg-success' : pct >= 50 ? 'bg-warning' : 'bg-danger'}`}

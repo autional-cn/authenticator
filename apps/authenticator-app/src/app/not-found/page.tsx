@@ -18,9 +18,9 @@ export default function NotFoundPage() {
 			<div className="flex h-20 w-20 items-center justify-center rounded-full bg-primary-500/10">
 				<FileQuestion size={40} className="text-primary-500" />
 			</div>
-			<h1 className="mt-6 text-4xl font-bold text-neutral-0">404</h1>
-			<p className="mt-2 text-base text-neutral-300">{t('notFound.title')}</p>
-			<p className="mt-1 text-sm text-neutral-500">{t('notFound.desc')}</p>
+			<h1 className="mt-6 text-4xl font-bold text-[var(--color-text-primary)]">404</h1>
+			<p className="mt-2 text-base text-[var(--color-text-secondary)]">{t('notFound.title')}</p>
+			<p className="mt-1 text-sm text-[var(--color-text-muted)]">{t('notFound.desc')}</p>
 			<Link
 				to={homePath}
 				className="mt-8 rounded-xl bg-primary-600 px-6 py-2.5 text-sm font-medium text-white transition-colors hover:bg-primary-500"

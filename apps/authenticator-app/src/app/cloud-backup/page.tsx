@@ -87,12 +87,12 @@ export default function CloudBackupPage() {
 			<header className="sticky top-0 z-10 flex items-center gap-3 border-b border-auth-border bg-auth-bg/80 h-[var(--layout-header-height)] px-4 backdrop-blur-md">
 				<button
 					onClick={() => navigate(toSlugged('/settings', slug))}
-					className="rounded-lg p-1.5 text-neutral-400 hover:bg-auth-elevated hover:text-neutral-0 transition-colors"
+					className="rounded-lg p-1.5 text-[var(--color-text-secondary)] hover:bg-auth-elevated hover:text-[var(--color-text-primary)] transition-colors"
 					aria-label={t('common.back')}
 				>
 					<ArrowLeft className="h-5 w-5" />
 				</button>
-				<h1 className="text-lg font-bold text-neutral-0">{t('cloudBackup.title')}</h1>
+				<h1 className="text-lg font-bold text-[var(--color-text-primary)]">{t('cloudBackup.title')}</h1>
 			</header>
 
 			<div className="flex-1 space-y-4 px-4 py-4">
@@ -111,7 +111,7 @@ export default function CloudBackupPage() {
 				)}
 
 				<section>
-					<h2 className="mb-2 text-xs font-semibold uppercase tracking-wider text-neutral-500">
+					<h2 className="mb-2 text-xs font-semibold uppercase tracking-wider text-[var(--color-text-muted)]">
 						{t('cloudBackup.status')}
 					</h2>
 					<div className="rounded-xl border border-auth-border bg-auth-surface">
@@ -122,42 +122,42 @@ export default function CloudBackupPage() {
 						) : backup ? (
 							<div className="divide-y divide-auth-border">
 								<div className="flex items-center gap-3 px-4 py-3">
-									<Clock className="h-4 w-4 shrink-0 text-neutral-400" />
-									<span className="text-sm text-neutral-400">{t('cloudBackup.lastBackup')}</span>
-									<span className="ml-auto text-sm text-neutral-0">
+									<Clock className="h-4 w-4 shrink-0 text-[var(--color-text-secondary)]" />
+									<span className="text-sm text-[var(--color-text-secondary)]">{t('cloudBackup.lastBackup')}</span>
+									<span className="ml-auto text-sm text-[var(--color-text-primary)]">
 										{formatDate(backup.createdAt)}
 									</span>
 								</div>
 								<div className="flex items-center gap-3 px-4 py-3">
-									<Hash className="h-4 w-4 shrink-0 text-neutral-400" />
-									<span className="text-sm text-neutral-400">{t('cloudBackup.accountCount')}</span>
-									<span className="ml-auto text-sm text-neutral-0">{backup.accountCount}</span>
+									<Hash className="h-4 w-4 shrink-0 text-[var(--color-text-secondary)]" />
+									<span className="text-sm text-[var(--color-text-secondary)]">{t('cloudBackup.accountCount')}</span>
+									<span className="ml-auto text-sm text-[var(--color-text-primary)]">{backup.accountCount}</span>
 								</div>
 								<div className="flex items-center gap-3 px-4 py-3">
-									<Shield className="h-4 w-4 shrink-0 text-neutral-400" />
-									<span className="text-sm text-neutral-400">{t('cloudBackup.version')}</span>
-									<span className="ml-auto text-sm text-neutral-0">v{backup.version}</span>
+									<Shield className="h-4 w-4 shrink-0 text-[var(--color-text-secondary)]" />
+									<span className="text-sm text-[var(--color-text-secondary)]">{t('cloudBackup.version')}</span>
+									<span className="ml-auto text-sm text-[var(--color-text-primary)]">v{backup.version}</span>
 								</div>
 								<div className="flex items-center gap-3 px-4 py-3">
-									<Cloud className="h-4 w-4 shrink-0 text-neutral-400" />
-									<span className="text-sm text-neutral-400">{t('cloudBackup.device')}</span>
-									<span className="ml-auto text-sm text-neutral-0">
+									<Cloud className="h-4 w-4 shrink-0 text-[var(--color-text-secondary)]" />
+									<span className="text-sm text-[var(--color-text-secondary)]">{t('cloudBackup.device')}</span>
+									<span className="ml-auto text-sm text-[var(--color-text-primary)]">
 										{backup.deviceName || t('cloudBackup.unknown')}
 									</span>
 								</div>
 							</div>
 						) : (
 							<div className="flex flex-col items-center justify-center py-10 text-center px-4">
-								<Cloud className="h-10 w-10 text-neutral-600 mb-3" />
-								<p className="text-sm text-neutral-400">{t('cloudBackup.noBackup')}</p>
-								<p className="mt-1 text-xs text-neutral-600">{t('cloudBackup.noBackupHint')}</p>
+								<Cloud className="h-10 w-10 text-[var(--color-text-muted)] mb-3" />
+								<p className="text-sm text-[var(--color-text-secondary)]">{t('cloudBackup.noBackup')}</p>
+								<p className="mt-1 text-xs text-[var(--color-text-muted)]">{t('cloudBackup.noBackupHint')}</p>
 							</div>
 						)}
 					</div>
 				</section>
 
 				<section>
-					<h2 className="mb-2 text-xs font-semibold uppercase tracking-wider text-neutral-500">
+					<h2 className="mb-2 text-xs font-semibold uppercase tracking-wider text-[var(--color-text-muted)]">
 						{t('cloudBackup.actions')}
 					</h2>
 					<div className="rounded-xl border border-auth-border bg-auth-surface divide-y divide-auth-border">
@@ -169,8 +169,8 @@ export default function CloudBackupPage() {
 							<div className="flex items-center gap-3">
 								<Upload className="h-4 w-4 text-primary-400" />
 								<div>
-									<span className="text-sm text-neutral-0">{t('cloudBackup.upload')}</span>
-									<p className="text-[11px] text-neutral-500">
+									<span className="text-sm text-[var(--color-text-primary)]">{t('cloudBackup.upload')}</span>
+									<p className="text-[11px] text-[var(--color-text-muted)]">
 										{accounts.length > 0
 											? t('settings.accountsCountLabel', { n: accounts.length })
 											: t('home.noAccounts')}
@@ -190,13 +190,13 @@ export default function CloudBackupPage() {
 							<div className="flex items-center gap-3">
 								<Download className="h-4 w-4 text-primary-400" />
 								<div>
-									<span className="text-sm text-neutral-0">{t('cloudBackup.download')}</span>
+									<span className="text-sm text-[var(--color-text-primary)]">{t('cloudBackup.download')}</span>
 								</div>
 							</div>
 							{downloading ? (
 								<div className="h-5 w-5 animate-spin rounded-full border-2 border-primary-500 border-t-transparent" />
 							) : (
-								<Download className="h-4 w-4 text-neutral-500" />
+								<Download className="h-4 w-4 text-[var(--color-text-muted)]" />
 							)}
 						</button>
 
@@ -204,16 +204,16 @@ export default function CloudBackupPage() {
 							onClick={() => refetch()}
 							className="flex w-full items-center gap-3 px-4 py-3 text-left hover:bg-auth-elevated/50 transition-colors"
 						>
-							<RefreshCw className="h-4 w-4 text-neutral-400" />
-							<span className="text-sm text-neutral-400">{t('cloudBackup.refresh')}</span>
+							<RefreshCw className="h-4 w-4 text-[var(--color-text-secondary)]" />
+							<span className="text-sm text-[var(--color-text-secondary)]">{t('cloudBackup.refresh')}</span>
 						</button>
 					</div>
 				</section>
 
 				<div className="rounded-lg bg-auth-elevated p-3">
 					<div className="flex items-start gap-2">
-						<Shield className="mt-0.5 h-4 w-4 shrink-0 text-neutral-500" />
-						<div className="text-xs text-neutral-500 space-y-1">
+						<Shield className="mt-0.5 h-4 w-4 shrink-0 text-[var(--color-text-muted)]" />
+						<div className="text-xs text-[var(--color-text-muted)] space-y-1">
 							<p>{t('cloudBackup.encryptionNote1')}</p>
 							<p>{t('cloudBackup.encryptionNote2')}</p>
 						</div>

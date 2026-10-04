@@ -66,12 +66,12 @@ export default function DeviceSyncPage() {
 			<header className="sticky top-0 z-10 flex items-center gap-3 border-b border-auth-border bg-auth-bg/80 h-[var(--layout-header-height)] px-4 backdrop-blur-md">
 				<button
 					onClick={() => navigate(toSlugged('/settings', slug))}
-					className="rounded-lg p-1.5 text-neutral-400 hover:bg-auth-elevated hover:text-neutral-0 transition-colors"
+					className="rounded-lg p-1.5 text-[var(--color-text-secondary)] hover:bg-auth-elevated hover:text-[var(--color-text-primary)] transition-colors"
 					aria-label={t('common.back')}
 				>
 					<ArrowLeft className="h-5 w-5" />
 				</button>
-				<h1 className="text-lg font-bold text-neutral-0">{t('deviceSync.title')}</h1>
+				<h1 className="text-lg font-bold text-[var(--color-text-primary)]">{t('deviceSync.title')}</h1>
 			</header>
 
 			<div className="flex-1 space-y-4 px-4 py-4">
@@ -90,7 +90,7 @@ export default function DeviceSyncPage() {
 				)}
 
 				<section>
-					<h2 className="mb-2 text-xs font-semibold uppercase tracking-wider text-neutral-500">
+					<h2 className="mb-2 text-xs font-semibold uppercase tracking-wider text-[var(--color-text-muted)]">
 						{t('deviceSync.list')}
 					</h2>
 					<div className="rounded-xl border border-auth-border bg-auth-surface">
@@ -100,9 +100,9 @@ export default function DeviceSyncPage() {
 							</div>
 						) : devices.length === 0 ? (
 							<div className="flex flex-col items-center justify-center py-12 text-center px-4">
-								<Smartphone className="h-10 w-10 text-neutral-600 mb-3" />
-								<p className="text-sm text-neutral-400">{t('deviceSync.noDevices')}</p>
-								<p className="mt-1 text-xs text-neutral-600">{t('deviceSync.noDevicesHint')}</p>
+								<Smartphone className="h-10 w-10 text-[var(--color-text-muted)] mb-3" />
+								<p className="text-sm text-[var(--color-text-secondary)]">{t('deviceSync.noDevices')}</p>
+								<p className="mt-1 text-xs text-[var(--color-text-muted)]">{t('deviceSync.noDevicesHint')}</p>
 							</div>
 						) : (
 							<div className="divide-y divide-auth-border">
@@ -112,24 +112,24 @@ export default function DeviceSyncPage() {
 											<Smartphone className="h-5 w-5 text-primary-400" />
 										</div>
 										<div className="min-w-0 flex-1">
-											<p className="text-sm font-medium text-neutral-0 truncate">
+											<p className="text-sm font-medium text-[var(--color-text-primary)] truncate">
 												{device.deviceName || t('deviceSync.unnamedDevice')}
 											</p>
 											<div className="flex items-center gap-2 mt-0.5">
 												<span
-													className="text-[10px] font-mono text-neutral-500"
+													className="text-[10px] font-mono text-[var(--color-text-muted)]"
 													title={device.deviceFingerprint}
 												>
 													{truncateFingerprint(device.deviceFingerprint)}
 												</span>
 											</div>
 											<div className="flex items-center gap-1 mt-0.5">
-												<Clock className="h-3 w-3 text-neutral-600" />
-												<span className="text-[10px] text-neutral-500">
+												<Clock className="h-3 w-3 text-[var(--color-text-muted)]" />
+												<span className="text-[10px] text-[var(--color-text-muted)]">
 													{formatDate(device.lastSyncAt)}
 												</span>
 												{device.accountCount != null && (
-													<span className="text-[10px] text-neutral-600">
+													<span className="text-[10px] text-[var(--color-text-muted)]">
 														· {t('settings.accountsCountLabel', { n: device.accountCount })}
 													</span>
 												)}
@@ -147,7 +147,7 @@ export default function DeviceSyncPage() {
 				</section>
 
 				<section>
-					<h2 className="mb-2 text-xs font-semibold uppercase tracking-wider text-neutral-500">
+					<h2 className="mb-2 text-xs font-semibold uppercase tracking-wider text-[var(--color-text-muted)]">
 						{t('deviceSync.actions')}
 					</h2>
 					<div className="rounded-xl border border-auth-border bg-auth-surface divide-y divide-auth-border">
@@ -159,8 +159,8 @@ export default function DeviceSyncPage() {
 							<div className="flex items-center gap-3">
 								<Wifi className="h-4 w-4 text-primary-400" />
 								<div>
-									<span className="text-sm text-neutral-0">{t('deviceSync.syncThis')}</span>
-									<p className="text-[11px] text-neutral-500">
+									<span className="text-sm text-[var(--color-text-primary)]">{t('deviceSync.syncThis')}</span>
+									<p className="text-[11px] text-[var(--color-text-muted)]">
 										{accounts.length > 0
 											? t('settings.accountsCountLabel', { n: accounts.length })
 											: t('home.noAccounts')}
@@ -176,16 +176,16 @@ export default function DeviceSyncPage() {
 							onClick={() => refetch()}
 							className="flex w-full items-center gap-3 px-4 py-3 text-left hover:bg-auth-elevated/50 transition-colors"
 						>
-							<RefreshCw className="h-4 w-4 text-neutral-400" />
-							<span className="text-sm text-neutral-400">{t('deviceSync.refreshList')}</span>
+							<RefreshCw className="h-4 w-4 text-[var(--color-text-secondary)]" />
+							<span className="text-sm text-[var(--color-text-secondary)]">{t('deviceSync.refreshList')}</span>
 						</button>
 					</div>
 				</section>
 
 				<div className="rounded-lg bg-auth-elevated p-3">
 					<div className="flex items-start gap-2">
-						<Shield className="mt-0.5 h-4 w-4 shrink-0 text-neutral-500" />
-						<div className="text-xs text-neutral-500 space-y-1">
+						<Shield className="mt-0.5 h-4 w-4 shrink-0 text-[var(--color-text-muted)]" />
+						<div className="text-xs text-[var(--color-text-muted)] space-y-1">
 							<p>{t('deviceSync.encryptionNote1')}</p>
 							<p>{t('deviceSync.encryptionNote2')}</p>
 						</div>

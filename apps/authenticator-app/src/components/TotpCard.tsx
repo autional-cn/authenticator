@@ -116,8 +116,8 @@ export default function TotpCard({
 						)}
 						<BrandIcon name={account.name} username={account.username} size={32} />
 						<div className="min-w-0">
-							<h2 className="text-sm font-semibold text-neutral-0 truncate">{account.name}</h2>
-							<p className="text-xs text-neutral-400 truncate">{account.username}</p>
+							<h2 className="text-sm font-semibold text-[var(--color-text-primary)] truncate">{account.name}</h2>
+							<p className="text-xs text-[var(--color-text-secondary)] truncate">{account.username}</p>
 						</div>
 					</div>
 					<button
@@ -125,7 +125,7 @@ export default function TotpCard({
 							if (batchMode) e.stopPropagation();
 							setShowDelete(!showDelete);
 						}}
-						className="rounded-md p-1.5 text-neutral-500 hover:bg-danger/10 hover:text-danger transition-colors"
+						className="rounded-md p-1.5 text-[var(--color-text-muted)] hover:bg-danger/10 hover:text-danger transition-colors"
 						aria-label="删除账户"
 					>
 						<Trash2 className="h-3.5 w-3.5" />
@@ -141,10 +141,10 @@ export default function TotpCard({
 						}}
 						className="group flex items-center gap-3"
 					>
-						<span className="totp-code text-3xl font-mono font-bold tracking-wider text-neutral-0">
+						<span className="totp-code text-3xl font-mono font-bold tracking-wider text-[var(--color-text-primary)]">
 							{totp?.code ?? '------'}
 						</span>
-						<span className="rounded-md p-1.5 text-neutral-500 group-hover:bg-primary-500/10 group-hover:text-primary-400 transition-colors">
+						<span className="rounded-md p-1.5 text-[var(--color-text-muted)] group-hover:bg-primary-500/10 group-hover:text-primary-400 transition-colors">
 							{copied ? <Check className="h-4 w-4 text-success" /> : <Copy className="h-4 w-4" />}
 						</span>
 					</button>
@@ -154,11 +154,11 @@ export default function TotpCard({
 				{/* Delete confirmation overlay */}
 				{showDelete && (
 					<div className="absolute inset-0 flex flex-col items-center justify-center bg-auth-surface/95 backdrop-blur-sm gap-3">
-						<p className="text-sm text-neutral-300">{t('card.confirmDelete')}</p>
+						<p className="text-sm text-[var(--color-text-secondary)]">{t('card.confirmDelete')}</p>
 						<div className="flex gap-2">
 							<button
 								onClick={() => setShowDelete(false)}
-								className="rounded-lg bg-auth-elevated px-4 py-1.5 text-xs font-medium text-neutral-300 hover:bg-auth-border transition-colors"
+								className="rounded-lg bg-auth-elevated px-4 py-1.5 text-xs font-medium text-[var(--color-text-secondary)] hover:bg-auth-border transition-colors"
 							>
 								{t('common.cancel')}
 							</button>

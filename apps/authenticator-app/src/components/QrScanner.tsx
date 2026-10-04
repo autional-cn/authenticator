@@ -140,9 +140,9 @@ export default function QrScanner({ onScan, onMigration, onScanLogin, onError }:
 	if (error || !hasCamera) {
 		return (
 			<div className="flex flex-col items-center justify-center rounded-xl bg-auth-surface border border-auth-border py-10 text-center">
-				<Camera className="mb-3 h-10 w-10 text-neutral-500" />
-				<p className="mb-1 text-sm font-medium text-neutral-300">{t('qr.noCamera')}</p>
-				<p className="max-w-[240px] text-xs text-neutral-500">{error}</p>
+				<Camera className="mb-3 h-10 w-10 text-[var(--color-text-muted)]" />
+				<p className="mb-1 text-sm font-medium text-[var(--color-text-secondary)]">{t('qr.noCamera')}</p>
+				<p className="max-w-[240px] text-xs text-[var(--color-text-muted)]">{error}</p>
 			</div>
 		);
 	}

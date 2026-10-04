@@ -412,7 +412,7 @@ export default function SettingsPage() {
 				<SettingsAppearance theme={theme} onToggle={toggleTheme} />
 
 				<section>
-					<h2 className="mb-2 text-xs font-semibold uppercase tracking-wider text-neutral-500">
+					<h2 className="mb-2 text-xs font-semibold uppercase tracking-wider text-[var(--color-text-muted)]">
 						{t('settings.security')}
 					</h2>
 					<div className="rounded-xl border border-auth-border bg-auth-surface divide-y divide-auth-border">
@@ -489,15 +489,15 @@ export default function SettingsPage() {
 				<SettingsAccount onLogout={handleLogout} />
 
 				<section>
-					<h2 className="mb-2 text-xs font-semibold uppercase tracking-wider text-neutral-500">
+					<h2 className="mb-2 text-xs font-semibold uppercase tracking-wider text-[var(--color-text-muted)]">
 						{t('settings.about')}
 					</h2>
 					<div className="rounded-xl border border-auth-border bg-auth-surface">
 						<div className="flex items-center gap-3 px-4 py-3">
-							<Info className="h-4 w-4 text-neutral-400" />
+							<Info className="h-4 w-4 text-[var(--color-text-secondary)]" />
 							<div>
-								<span className="text-sm text-neutral-0">{t('settings.aboutVersion')}</span>
-								<p className="text-[11px] text-neutral-500">{t('settings.aboutDesc')}</p>
+								<span className="text-sm text-[var(--color-text-primary)]">{t('settings.aboutVersion')}</span>
+								<p className="text-[11px] text-[var(--color-text-muted)]">{t('settings.aboutDesc')}</p>
 							</div>
 						</div>
 					</div>

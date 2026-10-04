@@ -6,7 +6,7 @@ export default function SettingsAccount({ onLogout }: { onLogout: () => void }) 
 
 	return (
 		<section>
-			<h2 className="mb-2 text-xs font-semibold uppercase tracking-wider text-neutral-500">
+			<h2 className="mb-2 text-xs font-semibold uppercase tracking-wider text-[var(--color-text-muted)]">
 				{t('settings.account')}
 			</h2>
 			<div className="rounded-xl border border-auth-border bg-auth-surface">

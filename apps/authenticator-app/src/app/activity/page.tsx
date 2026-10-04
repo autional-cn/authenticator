@@ -47,7 +47,7 @@ export default function ActivityPage() {
 			case 'pending':
 				return <Clock className="h-5 w-5 text-warning" />;
 			default:
-				return <AlertCircle className="h-5 w-5 text-neutral-400" />;
+				return <AlertCircle className="h-5 w-5 text-[var(--color-text-secondary)]" />;
 		}
 	};
 
@@ -75,12 +75,12 @@ export default function ActivityPage() {
 			<header className="sticky top-0 z-10 flex items-center gap-3 border-b border-auth-border bg-auth-bg/80 h-[var(--layout-header-height)] px-4 backdrop-blur-md">
 				<button
 					onClick={() => navigate(toSlugged('/settings', slug))}
-					className="rounded-lg p-1.5 text-neutral-400 hover:bg-auth-elevated hover:text-neutral-0 transition-colors"
+					className="rounded-lg p-1.5 text-[var(--color-text-secondary)] hover:bg-auth-elevated hover:text-[var(--color-text-primary)] transition-colors"
 					aria-label={t('common.back')}
 				>
 					<ArrowLeft className="h-5 w-5" />
 				</button>
-				<h1 className="text-lg font-bold text-neutral-0">{t('activity.title')}</h1>
+				<h1 className="text-lg font-bold text-[var(--color-text-primary)]">{t('activity.title')}</h1>
 			</header>
 
 			{/* Filter Tabs */}
@@ -97,7 +97,7 @@ export default function ActivityPage() {
 						className={`shrink-0 rounded-full px-3 py-1 text-xs font-medium transition-colors ${
 							filter === f.key
 								? 'bg-primary-600 text-white'
-								: 'bg-auth-elevated text-neutral-400 hover:text-neutral-200'
+								: 'bg-auth-elevated text-[var(--color-text-secondary)] hover:text-[var(--color-text-primary)]'
 						}`}
 					>
 						{t(f.labelKey)}
@@ -111,7 +111,7 @@ export default function ActivityPage() {
 				) : error ? (
 					<ErrorState description={error} />
 				) : filtered.length === 0 ? (
-					<div className="py-12 text-center text-sm text-neutral-400">{t('activity.empty')}</div>
+					<div className="py-12 text-center text-sm text-[var(--color-text-secondary)]">{t('activity.empty')}</div>
 				) : (
 					<div className="space-y-2">
 						{filtered.map((item) => (
@@ -122,15 +122,15 @@ export default function ActivityPage() {
 								<div className="mt-0.5">{getStatusIcon(item.status)}</div>
 								<div className="min-w-0 flex-1">
 									<div className="flex items-center justify-between">
-										<span className="text-sm font-medium text-neutral-0">
+										<span className="text-sm font-medium text-[var(--color-text-primary)]">
 											{getStatusLabel(item.status)}
 										</span>
-										<span className="text-[11px] text-neutral-500">
+										<span className="text-[11px] text-[var(--color-text-muted)]">
 											{formatTime(item.createdAt)}
 										</span>
 									</div>
 									{item.loginContext && (
-										<p className="mt-0.5 truncate text-xs text-neutral-400">{item.loginContext}</p>
+										<p className="mt-0.5 truncate text-xs text-[var(--color-text-secondary)]">{item.loginContext}</p>
 									)}
 								</div>
 							</div>

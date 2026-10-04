@@ -12,18 +12,18 @@ export default function SettingsAppearance({
 
 	return (
 		<section>
-			<h2 className="mb-2 text-xs font-semibold uppercase tracking-wider text-neutral-500">
+			<h2 className="mb-2 text-xs font-semibold uppercase tracking-wider text-[var(--color-text-muted)]">
 				{t('settings.appearance')}
 			</h2>
 			<div className="rounded-xl border border-auth-border bg-auth-surface">
 				<div className="flex items-center justify-between px-4 py-3">
 					<div className="flex items-center gap-3">
 						{theme === 'dark' ? (
-							<Moon className="h-4 w-4 text-neutral-400" />
+							<Moon className="h-4 w-4 text-[var(--color-text-secondary)]" />
 						) : (
-							<Sun className="h-4 w-4 text-neutral-400" />
+							<Sun className="h-4 w-4 text-[var(--color-text-secondary)]" />
 						)}
-						<span className="text-sm text-neutral-0">{t('settings.darkMode')}</span>
+						<span className="text-sm text-[var(--color-text-primary)]">{t('settings.darkMode')}</span>
 					</div>
 					<button
 						type="button"

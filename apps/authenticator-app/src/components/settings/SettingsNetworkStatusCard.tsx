@@ -18,7 +18,7 @@ export default function SettingsNetworkStatusCard({ isOnline }: { isOnline: bool
 					<span className={`text-sm font-medium ${isOnline ? 'text-success' : 'text-warning'}`}>
 						{isOnline ? t('settings.online') : t('settings.offline')}
 					</span>
-					<p className="text-[11px] text-neutral-400">
+					<p className="text-[11px] text-[var(--color-text-secondary)]">
 						{isOnline ? t('settings.onlineDesc') : t('settings.offlineDesc')}
 					</p>
 				</div>

@@ -55,8 +55,8 @@ function PinInputScreen() {
 			<div className="mb-8 flex h-20 w-20 items-center justify-center rounded-3xl bg-primary-500/10">
 				<ShieldCheck className="h-10 w-10 text-primary-500" />
 			</div>
-			<h1 className="mb-2 text-xl font-bold text-neutral-0">Autional 身份验证器</h1>
-			<p className="mb-8 text-sm text-neutral-400">
+			<h1 className="mb-2 text-xl font-bold text-[var(--color-text-primary)]">Autional 身份验证器</h1>
+			<p className="mb-8 text-sm text-[var(--color-text-secondary)]">
 				{bioAvailable && hasBiometricRegistered() ? t('unlock.bioOrPin') : t('unlock.enterPin')}
 			</p>
 
@@ -72,7 +72,7 @@ function PinInputScreen() {
 					</div>
 				)}
 				<div className="relative">
-					<Lock className="absolute left-3.5 top-1/2 h-4 w-4 -translate-y-1/2 text-neutral-500" />
+					<Lock className="absolute left-3.5 top-1/2 h-4 w-4 -translate-y-1/2 text-[var(--color-text-muted)]" />
 					<input
 						type="password"
 						inputMode="numeric"
@@ -84,7 +84,7 @@ function PinInputScreen() {
 						autoFocus
 						autoComplete="current-password"
 						aria-label={t('unlock.pinAria')}
-						className="w-full rounded-xl border border-auth-border bg-auth-elevated py-3 pl-10 pr-4 text-center text-lg font-mono tracking-widest text-neutral-0 placeholder-neutral-600 outline-none transition-colors focus:border-primary-500 focus:ring-1 focus:ring-primary-500/30"
+						className="w-full rounded-xl border border-auth-border bg-auth-elevated py-3 pl-10 pr-4 text-center text-lg font-mono tracking-widest text-[var(--color-text-primary)] placeholder:text-[var(--color-text-muted)] outline-none transition-colors focus:border-primary-500 focus:ring-1 focus:ring-primary-500/30"
 					/>
 				</div>
 				<button
@@ -117,7 +117,7 @@ function PinInputScreen() {
 							}
 						}}
 						disabled={isSubmitting}
-						className="flex w-full items-center justify-center gap-2 rounded-xl border border-auth-border bg-auth-surface py-3 text-sm font-medium text-neutral-0 hover:bg-auth-elevated transition-all disabled:opacity-50"
+						className="flex w-full items-center justify-center gap-2 rounded-xl border border-auth-border bg-auth-surface py-3 text-sm font-medium text-[var(--color-text-primary)] hover:bg-auth-elevated transition-all disabled:opacity-50"
 					>
 						<Fingerprint className="h-4 w-4" />
 						{t('unlock.useBiometric')}
@@ -190,8 +190,8 @@ export default function UnlockGate({ children }: { children: React.ReactNode }) 
 				role="alert"
 			>
 				<AlertCircle className="mb-4 h-10 w-10 text-danger" />
-				<h2 className="mb-2 text-lg font-bold text-neutral-0">{t('unlock.bootFailed')}</h2>
-				<p className="text-sm text-neutral-400">{bootError}</p>
+				<h2 className="mb-2 text-lg font-bold text-[var(--color-text-primary)]">{t('unlock.bootFailed')}</h2>
+				<p className="text-sm text-[var(--color-text-secondary)]">{bootError}</p>
 			</main>
 		);
 	}

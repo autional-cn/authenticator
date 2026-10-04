@@ -177,12 +177,12 @@ export default function AddAccountPage() {
 			<header className="sticky top-0 z-10 flex items-center gap-3 border-b border-auth-border bg-auth-bg/80 h-[var(--layout-header-height)] px-4 backdrop-blur-md">
 				<button
 					onClick={() => navigate(toSlugged('/', slug))}
-					className="rounded-lg p-1.5 text-neutral-400 hover:bg-auth-elevated hover:text-neutral-0 transition-colors"
+					className="rounded-lg p-1.5 text-[var(--color-text-secondary)] hover:bg-auth-elevated hover:text-[var(--color-text-primary)] transition-colors"
 					aria-label={t('account.goBack')}
 				>
 					<ArrowLeft className="h-5 w-5" />
 				</button>
-				<h1 className="text-lg font-bold text-neutral-0">{t('add.title')}</h1>
+				<h1 className="text-lg font-bold text-[var(--color-text-primary)]">{t('add.title')}</h1>
 			</header>
 
 			{/* Tabs */}
@@ -198,7 +198,7 @@ export default function AddAccountPage() {
 						className={`flex flex-1 items-center justify-center gap-1 rounded-lg py-2 text-xs font-medium transition-all ${
 							tab === tabItem.key
 								? 'bg-primary-600 text-white shadow-sm'
-								: 'text-neutral-400 hover:text-neutral-200'
+								: 'text-[var(--color-text-secondary)] hover:text-[var(--color-text-primary)]'
 						}`}
 					>
 						<tabItem.icon className="h-3.5 w-3.5" />
@@ -226,7 +226,7 @@ export default function AddAccountPage() {
 						<div>
 							<label
 								htmlFor="add-service-name"
-								className="mb-1.5 block text-xs font-medium text-neutral-300"
+								className="mb-1.5 block text-xs font-medium text-[var(--color-text-secondary)]"
 							>
 								{t('add.serviceName')} <span className="text-danger">*</span>
 							</label>
@@ -237,13 +237,13 @@ export default function AddAccountPage() {
 								value={name}
 								onChange={(e) => setName(e.target.value)}
 								placeholder={t('add.serviceName')}
-								className="w-full rounded-xl border border-auth-border bg-auth-elevated px-3.5 py-2.5 text-sm text-neutral-0 placeholder-neutral-600 outline-none transition-colors focus:border-primary-500 focus:ring-1 focus:ring-primary-500/30"
+								className="w-full rounded-xl border border-auth-border bg-auth-elevated px-3.5 py-2.5 text-sm text-[var(--color-text-primary)] placeholder:text-[var(--color-text-muted)] outline-none transition-colors focus:border-primary-500 focus:ring-1 focus:ring-primary-500/30"
 							/>
 						</div>
 						<div>
 							<label
 								htmlFor="add-username"
-								className="mb-1.5 block text-xs font-medium text-neutral-300"
+								className="mb-1.5 block text-xs font-medium text-[var(--color-text-secondary)]"
 							>
 								{t('add.username')} <span className="text-danger">*</span>
 							</label>
@@ -254,13 +254,13 @@ export default function AddAccountPage() {
 								value={username}
 								onChange={(e) => setUsername(e.target.value)}
 								placeholder={t('add.username')}
-								className="w-full rounded-xl border border-auth-border bg-auth-elevated px-3.5 py-2.5 text-sm text-neutral-0 placeholder-neutral-600 outline-none transition-colors focus:border-primary-500 focus:ring-1 focus:ring-primary-500/30"
+								className="w-full rounded-xl border border-auth-border bg-auth-elevated px-3.5 py-2.5 text-sm text-[var(--color-text-primary)] placeholder:text-[var(--color-text-muted)] outline-none transition-colors focus:border-primary-500 focus:ring-1 focus:ring-primary-500/30"
 							/>
 						</div>
 						<div>
 							<label
 								htmlFor="add-secret"
-								className="mb-1.5 block text-xs font-medium text-neutral-300"
+								className="mb-1.5 block text-xs font-medium text-[var(--color-text-secondary)]"
 							>
 								{t('add.secret')} <span className="text-danger">*</span>
 							</label>
@@ -271,9 +271,9 @@ export default function AddAccountPage() {
 								onChange={(e) => setSecret(e.target.value)}
 								placeholder="JBSWY3DPEHPK3PXP"
 								rows={3}
-								className="w-full resize-none rounded-xl border border-auth-border bg-auth-elevated px-3.5 py-2.5 text-sm font-mono text-neutral-0 placeholder-neutral-600 outline-none transition-colors focus:border-primary-500 focus:ring-1 focus:ring-primary-500/30"
+								className="w-full resize-none rounded-xl border border-auth-border bg-auth-elevated px-3.5 py-2.5 text-sm font-mono text-[var(--color-text-primary)] placeholder:text-[var(--color-text-muted)] outline-none transition-colors focus:border-primary-500 focus:ring-1 focus:ring-primary-500/30"
 							/>
-							<p className="mt-1 text-[11px] text-neutral-500">{t('add.secretHint')}</p>
+							<p className="mt-1 text-[11px] text-[var(--color-text-muted)]">{t('add.secretHint')}</p>
 						</div>
 						<button
 							type="submit"
@@ -320,7 +320,7 @@ export default function AddAccountPage() {
 						<div className="rounded-xl border border-auth-border bg-auth-surface p-4">
 							<div className="flex items-center gap-2 mb-3">
 								<Download className="h-4 w-4 text-primary-400" />
-								<h2 className="text-sm font-semibold text-neutral-0">
+								<h2 className="text-sm font-semibold text-[var(--color-text-primary)]">
 									{t('add.migrationTitle', { n: migratedAccounts.length })}
 								</h2>
 							</div>
@@ -336,8 +336,8 @@ export default function AddAccountPage() {
 											</span>
 										</div>
 										<div className="min-w-0 flex-1">
-											<p className="text-xs font-medium text-neutral-0 truncate">{acc.name}</p>
-											<p className="text-[10px] text-neutral-500">
+											<p className="text-xs font-medium text-[var(--color-text-primary)] truncate">{acc.name}</p>
+											<p className="text-[10px] text-[var(--color-text-muted)]">
 												{acc.algorithm} · {acc.digits}
 											</p>
 										</div>
@@ -348,7 +348,7 @@ export default function AddAccountPage() {
 						<div className="flex gap-2">
 							<button
 								onClick={() => setMigratedAccounts(null)}
-								className="flex-1 rounded-xl bg-auth-elevated py-3 text-sm font-medium text-neutral-300 hover:bg-auth-border transition-colors"
+								className="flex-1 rounded-xl bg-auth-elevated py-3 text-sm font-medium text-[var(--color-text-secondary)] hover:bg-auth-border transition-colors"
 							>
 								{t('add.migrationCancel')}
 							</button>
@@ -398,14 +398,14 @@ export default function AddAccountPage() {
 									<div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-primary-500/10 mb-3">
 										<Shield className="h-7 w-7 text-primary-500" />
 									</div>
-									<h2 className="text-base font-semibold text-neutral-0">{t('add.bindTitle')}</h2>
-									<p className="mt-1 text-xs text-neutral-400 max-w-[240px]">{t('add.bindDesc')}</p>
+									<h2 className="text-base font-semibold text-[var(--color-text-primary)]">{t('add.bindTitle')}</h2>
+									<p className="mt-1 text-xs text-[var(--color-text-secondary)] max-w-[240px]">{t('add.bindDesc')}</p>
 								</div>
 
 								<div>
 									<label
 										htmlFor="bind-name"
-										className="mb-1.5 block text-xs font-medium text-neutral-300"
+										className="mb-1.5 block text-xs font-medium text-[var(--color-text-secondary)]"
 									>
 										{t('add.serviceName')}
 									</label>
@@ -416,13 +416,13 @@ export default function AddAccountPage() {
 										value={bindName}
 										onChange={(e) => setBindName(e.target.value)}
 										placeholder="Autional"
-										className="w-full rounded-xl border border-auth-border bg-auth-elevated px-3.5 py-2.5 text-sm text-neutral-0 placeholder-neutral-600 outline-none transition-colors focus:border-primary-500"
+										className="w-full rounded-xl border border-auth-border bg-auth-elevated px-3.5 py-2.5 text-sm text-[var(--color-text-primary)] placeholder:text-[var(--color-text-muted)] outline-none transition-colors focus:border-primary-500"
 									/>
 								</div>
 								<div>
 									<label
 										htmlFor="bind-username"
-										className="mb-1.5 block text-xs font-medium text-neutral-300"
+										className="mb-1.5 block text-xs font-medium text-[var(--color-text-secondary)]"
 									>
 										{t('add.username')}
 									</label>
@@ -433,7 +433,7 @@ export default function AddAccountPage() {
 										value={bindUsername}
 										onChange={(e) => setBindUsername(e.target.value)}
 										placeholder={user?.email || user?.username || 'your@email.com'}
-										className="w-full rounded-xl border border-auth-border bg-auth-elevated px-3.5 py-2.5 text-sm text-neutral-0 placeholder-neutral-600 outline-none transition-colors focus:border-primary-500"
+										className="w-full rounded-xl border border-auth-border bg-auth-elevated px-3.5 py-2.5 text-sm text-[var(--color-text-primary)] placeholder:text-[var(--color-text-muted)] outline-none transition-colors focus:border-primary-500"
 									/>
 								</div>
 
@@ -467,16 +467,16 @@ export default function AddAccountPage() {
 										<img src={bindQrCode} alt="TOTP QR Code" className="h-48 w-48 rounded-lg" />
 									) : (
 										<div className="flex h-48 w-48 items-center justify-center rounded-lg bg-auth-elevated">
-											<QrCode className="h-16 w-16 text-neutral-600" />
+											<QrCode className="h-16 w-16 text-[var(--color-text-muted)]" />
 										</div>
 									)}
-									<p className="mt-3 text-sm font-medium text-neutral-0">{t('add.bindScanQR')}</p>
-									<p className="text-xs text-neutral-400">{t('add.bindScanQRHint')}</p>
+									<p className="mt-3 text-sm font-medium text-[var(--color-text-primary)]">{t('add.bindScanQR')}</p>
+									<p className="text-xs text-[var(--color-text-secondary)]">{t('add.bindScanQRHint')}</p>
 								</div>
 
 								<div className="rounded-xl border border-auth-border bg-auth-surface p-4">
 									<div className="flex items-center justify-between">
-										<span className="text-xs text-neutral-400">{t('add.secret')}</span>
+										<span className="text-xs text-[var(--color-text-secondary)]">{t('add.secret')}</span>
 										<button
 											onClick={handleCopySecret}
 											className="flex items-center gap-1 text-xs text-primary-400 hover:text-primary-300"
@@ -485,7 +485,7 @@ export default function AddAccountPage() {
 											{t('copy')}
 										</button>
 									</div>
-									<code className="mt-1 block break-all text-sm font-mono text-neutral-300">
+									<code className="mt-1 block break-all text-sm font-mono text-[var(--color-text-secondary)]">
 										{bindSecret}
 									</code>
 								</div>
@@ -497,7 +497,7 @@ export default function AddAccountPage() {
 										</p>
 										<div className="mt-2 grid grid-cols-2 gap-1.5">
 											{bindBackupCodes.map((code, i) => (
-												<code key={i} className="text-center text-xs font-mono text-neutral-300">
+												<code key={i} className="text-center text-xs font-mono text-[var(--color-text-secondary)]">
 													{code}
 												</code>
 											))}
@@ -508,7 +508,7 @@ export default function AddAccountPage() {
 								<div>
 									<label
 										htmlFor="bind-verify-code"
-										className="mb-1.5 block text-xs font-medium text-neutral-300"
+										className="mb-1.5 block text-xs font-medium text-[var(--color-text-secondary)]"
 									>
 										{t('add.bindCodeLabel')}
 									</label>
@@ -522,7 +522,7 @@ export default function AddAccountPage() {
 										value={verifyCode}
 										onChange={(e) => setVerifyCode(e.target.value.replace(/\D/g, ''))}
 										placeholder="123456"
-										className="w-full rounded-xl border border-auth-border bg-auth-elevated px-3.5 py-2.5 text-center text-lg font-mono tracking-[0.3em] text-neutral-0 placeholder-neutral-600 outline-none transition-colors focus:border-primary-500"
+										className="w-full rounded-xl border border-auth-border bg-auth-elevated px-3.5 py-2.5 text-center text-lg font-mono tracking-[0.3em] text-[var(--color-text-primary)] placeholder:text-[var(--color-text-muted)] outline-none transition-colors focus:border-primary-500"
 									/>
 								</div>
 

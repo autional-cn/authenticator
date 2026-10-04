@@ -78,7 +78,7 @@ export default function PushApprovePage() {
 			<div className="flex min-h-screen items-center justify-center bg-gray-50 dark:bg-auth-bg">
 				<div className="text-center">
 					<div className="mx-auto mb-4 h-8 w-8 animate-spin rounded-full border-2 border-gray-300 border-t-blue-600 dark:border-neutral-700 dark:border-t-primary-500" />
-					<p className="text-gray-600 dark:text-neutral-400">Loading challenge...</p>
+					<p className="text-gray-600 dark:text-[var(--color-text-secondary)]">Loading challenge...</p>
 				</div>
 			</div>
 		);
@@ -91,10 +91,10 @@ export default function PushApprovePage() {
 					<div className="mb-4 flex justify-center">
 						<AlertTriangle className="h-12 w-12 text-red-500" />
 					</div>
-					<h1 className="mb-2 text-center text-xl font-semibold text-gray-900 dark:text-neutral-0">
+					<h1 className="mb-2 text-center text-xl font-semibold text-gray-900 dark:text-[var(--color-text-primary)]">
 						Error
 					</h1>
-					<p className="text-center text-gray-600 dark:text-neutral-400">{error}</p>
+					<p className="text-center text-gray-600 dark:text-[var(--color-text-secondary)]">{error}</p>
 				</div>
 			</div>
 		);
@@ -112,10 +112,10 @@ export default function PushApprovePage() {
 							<ShieldX className="h-16 w-16 text-red-500" />
 						)}
 					</div>
-					<h1 className="mb-2 text-center text-xl font-semibold text-gray-900 dark:text-neutral-0">
+					<h1 className="mb-2 text-center text-xl font-semibold text-gray-900 dark:text-[var(--color-text-primary)]">
 						{isApproved ? 'Login Approved' : 'Login Denied'}
 					</h1>
-					<p className="text-center text-gray-600 dark:text-neutral-400">
+					<p className="text-center text-gray-600 dark:text-[var(--color-text-secondary)]">
 						{isApproved
 							? 'You have successfully approved the login request.'
 							: 'You have denied the login request.'}
@@ -134,25 +134,25 @@ export default function PushApprovePage() {
 					</div>
 				</div>
 
-				<h1 className="mb-2 text-center text-xl font-semibold text-gray-900 dark:text-neutral-0">
+				<h1 className="mb-2 text-center text-xl font-semibold text-gray-900 dark:text-[var(--color-text-primary)]">
 					Login Approval Request
 				</h1>
 
 				{challenge?.loginContext && (
-					<p className="mb-4 text-center text-sm text-gray-600 dark:text-neutral-400">
+					<p className="mb-4 text-center text-sm text-gray-600 dark:text-[var(--color-text-secondary)]">
 						Context: {challenge.loginContext}
 					</p>
 				)}
 
 				{urlNumberMatching && (
 					<div className="mb-6 rounded-lg bg-gray-100 dark:bg-auth-elevated p-4 text-center">
-						<p className="text-xs uppercase tracking-wide text-gray-500 dark:text-neutral-500">
+						<p className="text-xs uppercase tracking-wide text-gray-500 dark:text-[var(--color-text-muted)]">
 							Verification Number
 						</p>
-						<p className="mt-1 text-4xl font-bold text-gray-900 dark:text-neutral-0">
+						<p className="mt-1 text-4xl font-bold text-gray-900 dark:text-[var(--color-text-primary)]">
 							{urlNumberMatching}
 						</p>
-						<p className="mt-1 text-xs text-gray-500 dark:text-neutral-500">
+						<p className="mt-1 text-xs text-gray-500 dark:text-[var(--color-text-muted)]">
 							Confirm this number matches the login screen
 						</p>
 					</div>
@@ -168,7 +168,7 @@ export default function PushApprovePage() {
 					<button
 						onClick={handleDeny}
 						disabled={actionLoading}
-						className="flex-1 rounded-lg border border-gray-300 dark:border-auth-border bg-white dark:bg-auth-elevated px-4 py-3 font-medium text-gray-700 dark:text-neutral-300 transition hover:bg-gray-50 dark:hover:bg-auth-border disabled:opacity-50"
+						className="flex-1 rounded-lg border border-gray-300 dark:border-auth-border bg-white dark:bg-auth-elevated px-4 py-3 font-medium text-gray-700 dark:text-[var(--color-text-secondary)] transition hover:bg-gray-50 dark:hover:bg-auth-border disabled:opacity-50"
 					>
 						{actionLoading ? '...' : 'Deny'}
 					</button>

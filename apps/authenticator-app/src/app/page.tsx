@@ -121,7 +121,7 @@ export default function HomePage() {
 			<header className="sticky top-0 z-10 flex items-center border-b border-auth-border bg-auth-bg/80 h-[var(--layout-header-height)] px-4 backdrop-blur-md">
 				<div className="flex items-center gap-2">
 					<ShieldCheck className="h-6 w-6 text-primary-500" />
-					<h1 className="text-lg font-bold text-neutral-0">{t('home.title')}</h1>
+					<h1 className="text-lg font-bold text-[var(--color-text-primary)]">{t('home.title')}</h1>
 					<LanguageSwitcher className="ml-auto mr-2" />
 					<span className="rounded-full bg-primary-500/10 px-2 py-0.5 text-[10px] font-medium text-primary-400">
 						{t('home.accountsCount', { n: accounts.length })}
@@ -135,7 +135,7 @@ export default function HomePage() {
 							}
 						}}
 						className={`rounded-lg px-2 py-1 text-xs font-medium transition-colors ${
-							batchMode ? 'bg-primary-600 text-white' : 'text-neutral-400 hover:text-neutral-200'
+							batchMode ? 'bg-primary-600 text-white' : 'text-[var(--color-text-secondary)] hover:text-[var(--color-text-primary)]'
 						}`}
 					>
 						{batchMode ? t('common.cancel') : t('home.multiSelect')}
@@ -145,19 +145,19 @@ export default function HomePage() {
 				{/* Search Bar */}
 				<div className="mt-3 flex items-center gap-2">
 					<div className="relative flex-1">
-						<Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-neutral-500" />
+						<Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-[var(--color-text-muted)]" />
 						<input
 							type="text"
 							value={searchQuery}
 							onChange={(e) => setSearchQuery(e.target.value)}
 							placeholder={t('home.searchPlaceholder')}
 							aria-label={t('home.searchPlaceholder')}
-							className="w-full rounded-xl border border-auth-border bg-auth-elevated py-2 pl-9 pr-8 text-sm text-neutral-0 placeholder-neutral-600 outline-none transition-colors focus:border-primary-500"
+							className="w-full rounded-xl border border-auth-border bg-auth-elevated py-2 pl-9 pr-8 text-sm text-[var(--color-text-primary)] placeholder:text-[var(--color-text-muted)] outline-none transition-colors focus:border-primary-500"
 						/>
 						{searchQuery && (
 							<button
 								onClick={() => setSearchQuery('')}
-								className="absolute right-2 top-1/2 -translate-y-1/2 rounded-md p-0.5 text-neutral-500 hover:text-neutral-300"
+								className="absolute right-2 top-1/2 -translate-y-1/2 rounded-md p-0.5 text-[var(--color-text-muted)] hover:text-[var(--color-text-secondary)]"
 								aria-label={t('home.clearFilter')}
 							>
 								<X className="h-4 w-4" />
@@ -166,7 +166,7 @@ export default function HomePage() {
 					</div>
 					<button
 						onClick={() => setViewMode(viewMode === 'list' ? 'grid' : 'list')}
-						className="rounded-xl border border-auth-border bg-auth-elevated p-2 text-neutral-400 hover:text-neutral-200"
+						className="rounded-xl border border-auth-border bg-auth-elevated p-2 text-[var(--color-text-secondary)] hover:text-[var(--color-text-primary)]"
 						aria-label={viewMode === 'list' ? t('home.gridView') : t('home.listView')}
 					>
 						{viewMode === 'list' ? (
@@ -185,7 +185,7 @@ export default function HomePage() {
 							className={`shrink-0 rounded-full px-3 py-1 text-xs font-medium transition-colors ${
 								selectedGroup === null
 									? 'bg-primary-600 text-white'
-									: 'bg-auth-elevated text-neutral-400 hover:text-neutral-200'
+									: 'bg-auth-elevated text-[var(--color-text-secondary)] hover:text-[var(--color-text-primary)]'
 							}`}
 						>
 							{t('home.filterAll')}
@@ -197,7 +197,7 @@ export default function HomePage() {
 								className={`shrink-0 rounded-full px-3 py-1 text-xs font-medium transition-colors ${
 									g === selectedGroup
 										? 'bg-primary-600 text-white'
-										: 'bg-auth-elevated text-neutral-400 hover:text-neutral-200'
+										: 'bg-auth-elevated text-[var(--color-text-secondary)] hover:text-[var(--color-text-primary)]'
 								}`}
 							>
 								{g}
@@ -215,7 +215,7 @@ export default function HomePage() {
 						<EmptyState />
 					) : (
 						<div className="flex flex-col items-center justify-center py-16 text-center">
-							<p className="text-sm text-neutral-400">{t('home.noMatch')}</p>
+							<p className="text-sm text-[var(--color-text-secondary)]">{t('home.noMatch')}</p>
 							<button
 								onClick={() => {
 									setSearchQuery('');

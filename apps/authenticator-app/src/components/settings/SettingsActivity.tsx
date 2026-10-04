@@ -10,7 +10,7 @@ export default function SettingsActivity() {
 
 	return (
 		<section>
-			<h2 className="mb-2 text-xs font-semibold uppercase tracking-wider text-neutral-500">
+			<h2 className="mb-2 text-xs font-semibold uppercase tracking-wider text-[var(--color-text-muted)]">
 				{t('settings.activity')}
 			</h2>
 			<button
@@ -18,10 +18,10 @@ export default function SettingsActivity() {
 				className="flex w-full items-center justify-between rounded-xl border border-auth-border bg-auth-surface px-4 py-3 text-left hover:bg-auth-elevated/50 transition-colors"
 			>
 				<div className="flex items-center gap-3">
-					<Activity className="h-4 w-4 text-neutral-400" />
-					<span className="text-sm text-neutral-0">{t('settings.activityRecord')}</span>
+					<Activity className="h-4 w-4 text-[var(--color-text-secondary)]" />
+					<span className="text-sm text-[var(--color-text-primary)]">{t('settings.activityRecord')}</span>
 				</div>
-				<ChevronRight className="h-4 w-4 text-neutral-500" />
+				<ChevronRight className="h-4 w-4 text-[var(--color-text-muted)]" />
 			</button>
 		</section>
 	);

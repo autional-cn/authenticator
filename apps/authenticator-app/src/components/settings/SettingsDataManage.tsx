@@ -18,7 +18,7 @@ export default function SettingsDataManage({
 
 	return (
 		<section>
-			<h2 className="mb-2 text-xs font-semibold uppercase tracking-wider text-neutral-500">
+			<h2 className="mb-2 text-xs font-semibold uppercase tracking-wider text-[var(--color-text-muted)]">
 				{t('settings.data')}
 			</h2>
 			<div className="rounded-xl border border-auth-border bg-auth-surface divide-y divide-auth-border">
@@ -27,17 +27,17 @@ export default function SettingsDataManage({
 					className="flex w-full items-center justify-between px-4 py-3 text-left hover:bg-auth-elevated/50 transition-colors"
 				>
 					<div className="flex items-center gap-3">
-						<Download className="h-4 w-4 text-neutral-400" />
-						<span className="text-sm text-neutral-0">{t('settings.exportBackup')}</span>
+						<Download className="h-4 w-4 text-[var(--color-text-secondary)]" />
+						<span className="text-sm text-[var(--color-text-primary)]">{t('settings.exportBackup')}</span>
 					</div>
-					<span className="text-xs text-neutral-500">
+					<span className="text-xs text-[var(--color-text-muted)]">
 						{t('settings.accountsCountLabel', { n: accountsCount })}
 					</span>
 				</button>
 				<label className="flex w-full cursor-pointer items-center justify-between px-4 py-3 text-left hover:bg-auth-elevated/50 transition-colors">
 					<div className="flex items-center gap-3">
-						<Upload className="h-4 w-4 text-neutral-400" />
-						<span className="text-sm text-neutral-0">{t('settings.importBackup')}</span>
+						<Upload className="h-4 w-4 text-[var(--color-text-secondary)]" />
+						<span className="text-sm text-[var(--color-text-primary)]">{t('settings.importBackup')}</span>
 					</div>
 					<input
 						type="file"

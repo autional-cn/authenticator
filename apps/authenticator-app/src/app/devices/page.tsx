@@ -58,12 +58,12 @@ export default function DevicesPage() {
 			<header className="sticky top-0 z-10 flex items-center gap-3 border-b border-auth-border bg-auth-bg/80 h-[var(--layout-header-height)] px-4 backdrop-blur-md">
 				<button
 					onClick={() => navigate(toSlugged('/settings', slug))}
-					className="rounded-lg p-1.5 text-neutral-400 hover:bg-auth-elevated hover:text-neutral-0 transition-colors"
+					className="rounded-lg p-1.5 text-[var(--color-text-secondary)] hover:bg-auth-elevated hover:text-[var(--color-text-primary)] transition-colors"
 					aria-label={t('common.back')}
 				>
 					<ArrowLeft className="h-5 w-5" />
 				</button>
-				<h1 className="text-lg font-bold text-neutral-0">{t('devices.title')}</h1>
+				<h1 className="text-lg font-bold text-[var(--color-text-primary)]">{t('devices.title')}</h1>
 			</header>
 
 			<div className="flex-1 px-4 py-4">
@@ -73,9 +73,9 @@ export default function DevicesPage() {
 					<ErrorState description={error} />
 				) : devices.length === 0 ? (
 					<div className="flex flex-col items-center justify-center py-16 text-center">
-						<Smartphone className="h-12 w-12 text-neutral-600 mb-3" />
-						<p className="text-sm text-neutral-400">{t('devices.empty')}</p>
-						<p className="mt-1 text-xs text-neutral-600">{t('devices.emptyHint')}</p>
+						<Smartphone className="h-12 w-12 text-[var(--color-text-muted)] mb-3" />
+						<p className="text-sm text-[var(--color-text-secondary)]">{t('devices.empty')}</p>
+						<p className="mt-1 text-xs text-[var(--color-text-muted)]">{t('devices.emptyHint')}</p>
 					</div>
 				) : (
 					<div className="space-y-2">
@@ -88,10 +88,10 @@ export default function DevicesPage() {
 									<Smartphone className="h-5 w-5 text-primary-400" />
 								</div>
 								<div className="min-w-0 flex-1">
-									<p className="text-sm font-medium text-neutral-0 truncate">
+									<p className="text-sm font-medium text-[var(--color-text-primary)] truncate">
 										{device.deviceName || t('devices.unnamed')}
 									</p>
-									<p className="text-[11px] text-neutral-500">
+									<p className="text-[11px] text-[var(--color-text-muted)]">
 										{formatDate(device.createdAt)}
 										{device.ipAddress ? ` · ${device.ipAddress}` : ''}
 									</p>
@@ -99,7 +99,7 @@ export default function DevicesPage() {
 								<button
 									onClick={() => handleDelete(device.id)}
 									disabled={deletingId === device.id}
-									className="rounded-lg p-2 text-neutral-500 hover:bg-danger/10 hover:text-danger transition-colors disabled:opacity-50"
+									className="rounded-lg p-2 text-[var(--color-text-muted)] hover:bg-danger/10 hover:text-danger transition-colors disabled:opacity-50"
 									aria-label={t('devices.revokeTitle')}
 								>
 									<Trash2 className="h-4 w-4" />
@@ -111,8 +111,8 @@ export default function DevicesPage() {
 
 				<div className="mt-4 rounded-lg bg-auth-elevated p-3">
 					<div className="flex items-start gap-2">
-						<AlertCircle className="mt-0.5 h-4 w-4 shrink-0 text-neutral-500" />
-						<p className="text-xs text-neutral-500">{t('devices.revokeNotice')}</p>
+						<AlertCircle className="mt-0.5 h-4 w-4 shrink-0 text-[var(--color-text-muted)]" />
+						<p className="text-xs text-[var(--color-text-muted)]">{t('devices.revokeNotice')}</p>
 					</div>
 				</div>
 			</div>

@@ -73,7 +73,7 @@ export default function LoginApprovePage() {
 			<div className="flex min-h-screen items-center justify-center px-4">
 				<div className="w-full max-w-sm space-y-4 text-center">
 					<div className="text-red-500 text-lg">!</div>
-					<p className="text-sm text-neutral-600">{state.errorMessage}</p>
+					<p className="text-sm text-[var(--color-text-muted)]">{state.errorMessage}</p>
 					<Button onClick={() => setState({ status: 'pending', numberMatching })}>
 						{t('common.retry')}
 					</Button>
@@ -90,7 +90,7 @@ export default function LoginApprovePage() {
 						<span className="text-2xl text-green-600"></span>
 					</div>
 					<h1 className="text-xl font-bold">{t('loginApprove.approvedTitle')}</h1>
-					<p className="text-sm text-neutral-500">{t('loginApprove.approvedDesc')}</p>
+					<p className="text-sm text-[var(--color-text-muted)]">{t('loginApprove.approvedDesc')}</p>
 				</div>
 			</div>
 		);
@@ -104,7 +104,7 @@ export default function LoginApprovePage() {
 						<span className="text-2xl text-red-600"></span>
 					</div>
 					<h1 className="text-xl font-bold">{t('loginApprove.deniedTitle')}</h1>
-					<p className="text-sm text-neutral-500">{t('loginApprove.deniedDesc')}</p>
+					<p className="text-sm text-[var(--color-text-muted)]">{t('loginApprove.deniedDesc')}</p>
 				</div>
 			</div>
 		);
@@ -115,12 +115,12 @@ export default function LoginApprovePage() {
 			<div className="w-full max-w-sm space-y-6">
 				<div className="text-center">
 					<h1 className="text-xl font-bold">{t('loginApprove.requestTitle')}</h1>
-					<p className="mt-2 text-sm text-neutral-500">{t('loginApprove.requestDesc')}</p>
+					<p className="mt-2 text-sm text-[var(--color-text-muted)]">{t('loginApprove.requestDesc')}</p>
 				</div>
 
 				{numberMatching && (
 					<div className="rounded-lg border border-blue-200 bg-blue-50 p-6 text-center">
-						<p className="text-xs text-neutral-500 mb-2">{t('loginApprove.confirmNumber')}</p>
+						<p className="text-xs text-[var(--color-text-muted)] mb-2">{t('loginApprove.confirmNumber')}</p>
 						<span className="text-3xl font-bold tracking-widest text-blue-700">
 							{numberMatching}
 						</span>

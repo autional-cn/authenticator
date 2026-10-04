@@ -10,7 +10,7 @@ export default function SettingsCloud() {
 
 	return (
 		<section>
-			<h2 className="mb-2 text-xs font-semibold uppercase tracking-wider text-neutral-500">
+			<h2 className="mb-2 text-xs font-semibold uppercase tracking-wider text-[var(--color-text-muted)]">
 				{t('settings.cloud')}
 			</h2>
 			<div className="rounded-xl border border-auth-border bg-auth-surface">
@@ -19,20 +19,20 @@ export default function SettingsCloud() {
 					className="flex w-full items-center justify-between border-b border-auth-border px-4 py-3 text-left hover:bg-auth-elevated/50 transition-colors"
 				>
 					<div className="flex items-center gap-3">
-						<Cloud className="h-4 w-4 text-neutral-400" />
-						<span className="text-sm text-neutral-0">{t('settings.cloudBackup')}</span>
+						<Cloud className="h-4 w-4 text-[var(--color-text-secondary)]" />
+						<span className="text-sm text-[var(--color-text-primary)]">{t('settings.cloudBackup')}</span>
 					</div>
-					<ChevronRight className="h-4 w-4 text-neutral-500" />
+					<ChevronRight className="h-4 w-4 text-[var(--color-text-muted)]" />
 				</button>
 				<button
 					onClick={() => navigate(toSlugged('/device-sync', slug))}
 					className="flex w-full items-center justify-between px-4 py-3 text-left hover:bg-auth-elevated/50 transition-colors"
 				>
 					<div className="flex items-center gap-3">
-						<Smartphone className="h-4 w-4 text-neutral-400" />
-						<span className="text-sm text-neutral-0">{t('settings.deviceSync')}</span>
+						<Smartphone className="h-4 w-4 text-[var(--color-text-secondary)]" />
+						<span className="text-sm text-[var(--color-text-primary)]">{t('settings.deviceSync')}</span>
 					</div>
-					<ChevronRight className="h-4 w-4 text-neutral-500" />
+					<ChevronRight className="h-4 w-4 text-[var(--color-text-muted)]" />
 				</button>
 			</div>
 		</section>

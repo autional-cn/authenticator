@@ -44,7 +44,7 @@ const TYPE_COLORS: Record<string, string> = {
 	warning: 'text-warning',
 	system: 'text-primary-400',
 	email: 'text-info',
-	info: 'text-neutral-400',
+	info: 'text-[var(--color-text-secondary)]',
 };
 
 export default function NotificationsPage() {
@@ -151,7 +151,7 @@ export default function NotificationsPage() {
 	const getTypeIcon = (type?: string) => {
 		const iconKey = type || 'info';
 		const Icon = TYPE_ICONS[iconKey] || TYPE_ICONS.info;
-		return <Icon className={`h-5 w-5 ${TYPE_COLORS[iconKey] || 'text-neutral-400'}`} />;
+		return <Icon className={`h-5 w-5 ${TYPE_COLORS[iconKey] || 'text-[var(--color-text-secondary)]'}`} />;
 	};
 
 	const formatTime = (iso?: string) => {
@@ -187,12 +187,12 @@ export default function NotificationsPage() {
 			<header className="sticky top-0 z-10 flex items-center gap-3 border-b border-auth-border bg-auth-bg/80 h-[var(--layout-header-height)] px-4 backdrop-blur-md">
 				<button
 					onClick={() => navigate(toSlugged('/', slug))}
-					className="rounded-lg p-1.5 text-neutral-400 hover:bg-auth-elevated hover:text-neutral-0 transition-colors"
+					className="rounded-lg p-1.5 text-[var(--color-text-secondary)] hover:bg-auth-elevated hover:text-[var(--color-text-primary)] transition-colors"
 					aria-label={t('common.back')}
 				>
 					<ArrowLeft className="h-5 w-5" />
 				</button>
-				<h1 className="text-lg font-bold text-neutral-0">{t('notifications.title')}</h1>
+				<h1 className="text-lg font-bold text-[var(--color-text-primary)]">{t('notifications.title')}</h1>
 				<div className="ml-auto flex items-center gap-2">
 					{unreadCount > 0 && (
 						<span className="rounded-full bg-danger px-2 py-0.5 text-[10px] font-medium text-white">
@@ -202,7 +202,7 @@ export default function NotificationsPage() {
 					<button
 						onClick={handleRefresh}
 						disabled={refreshing}
-						className="rounded-lg p-1.5 text-neutral-400 hover:bg-auth-elevated hover:text-neutral-0 transition-colors disabled:opacity-50"
+						className="rounded-lg p-1.5 text-[var(--color-text-secondary)] hover:bg-auth-elevated hover:text-[var(--color-text-primary)] transition-colors disabled:opacity-50"
 						aria-label={t('notifications.refresh')}
 					>
 						<RefreshCw className={`h-5 w-5 ${refreshing ? 'animate-spin' : ''}`} />
@@ -211,7 +211,7 @@ export default function NotificationsPage() {
 						<button
 							onClick={handleMarkAllRead}
 							disabled={markingAll}
-							className="rounded-lg p-1.5 text-neutral-400 hover:bg-auth-elevated hover:text-neutral-0 transition-colors disabled:opacity-50"
+							className="rounded-lg p-1.5 text-[var(--color-text-secondary)] hover:bg-auth-elevated hover:text-[var(--color-text-primary)] transition-colors disabled:opacity-50"
 							aria-label={t('notifications.markAllRead')}
 						>
 							<CheckCheck className="h-5 w-5" />
@@ -232,7 +232,7 @@ export default function NotificationsPage() {
 						className={`shrink-0 rounded-full px-3 py-1 text-xs font-medium transition-colors ${
 							filter === f.key
 								? 'bg-primary-600 text-white'
-								: 'bg-auth-elevated text-neutral-400 hover:text-neutral-200'
+								: 'bg-auth-elevated text-[var(--color-text-secondary)] hover:text-[var(--color-text-primary)]'
 						}`}
 					>
 						{t(f.labelKey)}
@@ -246,7 +246,7 @@ export default function NotificationsPage() {
 				) : error ? (
 					<ErrorState description={error} onRetry={() => fetchNotifications()} />
 				) : filtered.length === 0 ? (
-					<div className="py-12 text-center text-sm text-neutral-400">
+					<div className="py-12 text-center text-sm text-[var(--color-text-secondary)]">
 						{t('notifications.empty')}
 					</div>
 				) : (
@@ -265,20 +265,20 @@ export default function NotificationsPage() {
 									<div className="min-w-0 flex-1">
 										<div className="flex items-center justify-between">
 											<span
-												className={`text-sm truncate ${!item.isRead ? 'font-semibold text-neutral-0' : 'font-medium text-neutral-0'}`}
+												className={`text-sm truncate ${!item.isRead ? 'font-semibold text-[var(--color-text-primary)]' : 'font-medium text-[var(--color-text-primary)]'}`}
 											>
 												{item.title || t('notifications.defaultTitle')}
 											</span>
 											<div className="flex items-center gap-2 shrink-0 ml-2">
 												{!item.isRead && <span className="h-2 w-2 rounded-full bg-primary-500" />}
-												<span className="text-[11px] text-neutral-500">
+												<span className="text-[11px] text-[var(--color-text-muted)]">
 													{formatTime(item.createdAt)}
 												</span>
 											</div>
 										</div>
 										{item.content && (
 											<p
-												className={`mt-0.5 text-xs line-clamp-2 ${!item.isRead ? 'text-neutral-300' : 'text-neutral-400'}`}
+												className={`mt-0.5 text-xs line-clamp-2 ${!item.isRead ? 'text-[var(--color-text-secondary)]' : 'text-[var(--color-text-secondary)]'}`}
 											>
 												{item.content}
 											</p>

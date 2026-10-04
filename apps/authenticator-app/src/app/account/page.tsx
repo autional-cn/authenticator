@@ -105,7 +105,7 @@ export default function AccountDetailPage() {
 
 	if (!account) {
 		return (
-			<div className="flex h-full flex-col items-center justify-center text-neutral-400">
+			<div className="flex h-full flex-col items-center justify-center text-[var(--color-text-secondary)]">
 				<p>{t('account.notFound')}</p>
 				<button
 					onClick={() => navigate(toSlugged('/', slug))}
@@ -123,12 +123,12 @@ export default function AccountDetailPage() {
 			<header className="sticky top-0 z-10 flex items-center gap-3 border-b border-auth-border bg-auth-bg/80 h-[var(--layout-header-height)] px-4 backdrop-blur-md">
 				<button
 					onClick={() => navigate(toSlugged('/', slug))}
-					className="rounded-lg p-1.5 text-neutral-400 hover:bg-auth-elevated hover:text-neutral-0 transition-colors"
+					className="rounded-lg p-1.5 text-[var(--color-text-secondary)] hover:bg-auth-elevated hover:text-[var(--color-text-primary)] transition-colors"
 					aria-label={t('account.goBack')}
 				>
 					<ArrowLeft className="h-5 w-5" />
 				</button>
-				<h1 className="text-lg font-bold text-neutral-0">{t('account.title')}</h1>
+				<h1 className="text-lg font-bold text-[var(--color-text-primary)]">{t('account.title')}</h1>
 				{hasChanges && (
 					<button
 						onClick={handleSave}
@@ -144,15 +144,15 @@ export default function AccountDetailPage() {
 				{/* TOTP Code Display */}
 				<div className="flex flex-col items-center rounded-xl border border-auth-border bg-auth-surface p-6">
 					<BrandIcon name={account.name} username={account.username} size={48} className="mb-3" />
-					<h2 className="text-lg font-semibold text-neutral-0">{account.name}</h2>
-					<p className="text-sm text-neutral-400">{account.username}</p>
+					<h2 className="text-lg font-semibold text-[var(--color-text-primary)]">{account.name}</h2>
+					<p className="text-sm text-[var(--color-text-secondary)]">{account.username}</p>
 
 					<div className="mt-4 flex items-center gap-4">
 						<button onClick={handleCopy} className="group flex items-center gap-2">
-							<span className="text-4xl font-mono font-bold tracking-wider text-neutral-0">
+							<span className="text-4xl font-mono font-bold tracking-wider text-[var(--color-text-primary)]">
 								{totp?.code ?? '------'}
 							</span>
-							<span className="rounded-md p-1.5 text-neutral-500 group-hover:bg-primary-500/10 group-hover:text-primary-400 transition-colors">
+							<span className="rounded-md p-1.5 text-[var(--color-text-muted)] group-hover:bg-primary-500/10 group-hover:text-primary-400 transition-colors">
 								{copied ? <Check className="h-4 w-4 text-success" /> : <Copy className="h-4 w-4" />}
 							</span>
 						</button>
@@ -162,34 +162,34 @@ export default function AccountDetailPage() {
 
 				{/* Edit Form */}
 				<div className="space-y-4 rounded-xl border border-auth-border bg-auth-surface p-4">
-					<h3 className="text-sm font-semibold text-neutral-0">{t('account.editInfo')}</h3>
+					<h3 className="text-sm font-semibold text-[var(--color-text-primary)]">{t('account.editInfo')}</h3>
 
 					<div>
-						<label className="mb-1.5 block text-xs font-medium text-neutral-300">
+						<label className="mb-1.5 block text-xs font-medium text-[var(--color-text-secondary)]">
 							{t('account.serviceName')}
 						</label>
 						<input
 							type="text"
 							value={name}
 							onChange={(e) => setName(e.target.value)}
-							className="w-full rounded-xl border border-auth-border bg-auth-elevated px-3.5 py-2.5 text-sm text-neutral-0 placeholder-neutral-600 outline-none transition-colors focus:border-primary-500"
+							className="w-full rounded-xl border border-auth-border bg-auth-elevated px-3.5 py-2.5 text-sm text-[var(--color-text-primary)] placeholder:text-[var(--color-text-muted)] outline-none transition-colors focus:border-primary-500"
 						/>
 					</div>
 
 					<div>
-						<label className="mb-1.5 block text-xs font-medium text-neutral-300">
+						<label className="mb-1.5 block text-xs font-medium text-[var(--color-text-secondary)]">
 							{t('account.username')}
 						</label>
 						<input
 							type="text"
 							value={username}
 							onChange={(e) => setUsername(e.target.value)}
-							className="w-full rounded-xl border border-auth-border bg-auth-elevated px-3.5 py-2.5 text-sm text-neutral-0 placeholder-neutral-600 outline-none transition-colors focus:border-primary-500"
+							className="w-full rounded-xl border border-auth-border bg-auth-elevated px-3.5 py-2.5 text-sm text-[var(--color-text-primary)] placeholder:text-[var(--color-text-muted)] outline-none transition-colors focus:border-primary-500"
 						/>
 					</div>
 
 					<div>
-						<label className="mb-1.5 block text-xs font-medium text-neutral-300">
+						<label className="mb-1.5 block text-xs font-medium text-[var(--color-text-secondary)]">
 							{t('account.group')}
 						</label>
 						<div className="flex flex-wrap gap-1.5">
@@ -203,7 +203,7 @@ export default function AccountDetailPage() {
 									className={`rounded-full px-3 py-1 text-xs font-medium transition-colors ${
 										g === group && !customGroup
 											? 'bg-primary-600 text-white'
-											: 'bg-auth-elevated text-neutral-400 hover:text-neutral-200'
+											: 'bg-auth-elevated text-[var(--color-text-secondary)] hover:text-[var(--color-text-primary)]'
 									}`}
 								>
 									{g}
@@ -218,24 +218,24 @@ export default function AccountDetailPage() {
 								setGroup('');
 							}}
 							placeholder={t('account.groupCustomPlaceholder')}
-							className="mt-2 w-full rounded-xl border border-auth-border bg-auth-elevated px-3.5 py-2 text-sm text-neutral-0 placeholder-neutral-600 outline-none transition-colors focus:border-primary-500"
+							className="mt-2 w-full rounded-xl border border-auth-border bg-auth-elevated px-3.5 py-2 text-sm text-[var(--color-text-primary)] placeholder:text-[var(--color-text-muted)] outline-none transition-colors focus:border-primary-500"
 						/>
 					</div>
 
 					<div>
-						<label className="mb-1.5 block text-xs font-medium text-neutral-300">
+						<label className="mb-1.5 block text-xs font-medium text-[var(--color-text-secondary)]">
 							{t('account.secretLabel')}
 						</label>
 						<div className="rounded-xl border border-auth-border bg-auth-elevated px-3.5 py-2.5">
-							<code className="break-all text-xs font-mono text-neutral-500">{account.secret}</code>
+							<code className="break-all text-xs font-mono text-[var(--color-text-muted)]">{account.secret}</code>
 						</div>
-						<p className="mt-1 text-[11px] text-neutral-600">{t('account.secretHint')}</p>
+						<p className="mt-1 text-[11px] text-[var(--color-text-muted)]">{t('account.secretHint')}</p>
 					</div>
 				</div>
 
 				{/* Pin & Order */}
 				<div className="space-y-3 rounded-xl border border-auth-border bg-auth-surface p-4">
-					<h3 className="text-sm font-semibold text-neutral-0">{t('account.sorting')}</h3>
+					<h3 className="text-sm font-semibold text-[var(--color-text-primary)]">{t('account.sorting')}</h3>
 
 					<button
 						onClick={() => {
@@ -245,7 +245,7 @@ export default function AccountDetailPage() {
 						className={`flex w-full items-center gap-2 rounded-lg px-3 py-2.5 text-sm font-medium transition-colors ${
 							account.pinned
 								? 'bg-warning/10 text-warning hover:bg-warning/20'
-								: 'bg-auth-elevated text-neutral-400 hover:text-neutral-200'
+								: 'bg-auth-elevated text-[var(--color-text-secondary)] hover:text-[var(--color-text-primary)]'
 						}`}
 					>
 						{account.pinned ? <PinOff className="h-4 w-4" /> : <Pin className="h-4 w-4" />}
@@ -269,7 +269,7 @@ export default function AccountDetailPage() {
 									showToast(t('account.movedUp'), 'success');
 								}
 							}}
-							className="flex flex-1 items-center justify-center gap-1.5 rounded-lg bg-auth-elevated px-3 py-2.5 text-sm text-neutral-400 hover:text-neutral-200 transition-colors"
+							className="flex flex-1 items-center justify-center gap-1.5 rounded-lg bg-auth-elevated px-3 py-2.5 text-sm text-[var(--color-text-secondary)] hover:text-[var(--color-text-primary)] transition-colors"
 						>
 							<ChevronUp className="h-4 w-4" />
 							{t('account.moveUp')}
@@ -290,7 +290,7 @@ export default function AccountDetailPage() {
 									showToast(t('account.movedDown'), 'success');
 								}
 							}}
-							className="flex flex-1 items-center justify-center gap-1.5 rounded-lg bg-auth-elevated px-3 py-2.5 text-sm text-neutral-400 hover:text-neutral-200 transition-colors"
+							className="flex flex-1 items-center justify-center gap-1.5 rounded-lg bg-auth-elevated px-3 py-2.5 text-sm text-[var(--color-text-secondary)] hover:text-[var(--color-text-primary)] transition-colors"
 						>
 							<ChevronDown className="h-4 w-4" />
 							{t('account.moveDown')}
@@ -301,7 +301,7 @@ export default function AccountDetailPage() {
 				{/* Delete */}
 				<div className="rounded-xl border border-danger/20 bg-danger/5 p-4">
 					<h3 className="text-sm font-semibold text-danger">{t('account.dangerZone')}</h3>
-					<p className="mt-1 text-xs text-neutral-400">{t('account.deleteWarning')}</p>
+					<p className="mt-1 text-xs text-[var(--color-text-secondary)]">{t('account.deleteWarning')}</p>
 
 					{!showDelete ? (
 						<button
@@ -317,7 +317,7 @@ export default function AccountDetailPage() {
 							<span className="text-xs text-danger">{t('account.confirmDelete')}</span>
 							<button
 								onClick={() => setShowDelete(false)}
-								className="rounded-lg bg-auth-elevated px-3 py-1.5 text-xs text-neutral-300 hover:text-neutral-0"
+								className="rounded-lg bg-auth-elevated px-3 py-1.5 text-xs text-[var(--color-text-secondary)] hover:text-[var(--color-text-primary)]"
 							>
 								{t('common.cancel')}
 							</button>

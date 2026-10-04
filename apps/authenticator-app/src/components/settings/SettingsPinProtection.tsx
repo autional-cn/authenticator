@@ -21,15 +21,15 @@ export default function SettingsPinProtection({
 	return (
 		<div className="px-4 py-3">
 			<div className="flex items-center gap-3 mb-2">
-				<Lock className="h-4 w-4 text-neutral-400" />
-				<span className="text-sm text-neutral-0">{t('settings.pin')}</span>
+				<Lock className="h-4 w-4 text-[var(--color-text-secondary)]" />
+				<span className="text-sm text-[var(--color-text-primary)]">{t('settings.pin')}</span>
 				{hasPin && (
 					<span className="ml-auto rounded-full bg-success/10 px-2 py-0.5 text-[10px] font-medium text-success">
 						{t('settings.pinEnabled')}
 					</span>
 				)}
 			</div>
-			<p className="text-[11px] text-neutral-500 mb-2">
+			<p className="text-[11px] text-[var(--color-text-muted)] mb-2">
 				{hasPin ? t('settings.pinDescEnabled') : t('settings.pinDescDisabled')}
 			</p>
 			{pinMessage && (
@@ -48,7 +48,7 @@ export default function SettingsPinProtection({
 				<div className="flex-1">
 					<label
 						htmlFor="settings-pin-input"
-						className="mb-1 block text-xs font-medium text-neutral-400"
+						className="mb-1 block text-xs font-medium text-[var(--color-text-secondary)]"
 					>
 						{t('settings.pin')}
 					</label>
@@ -63,7 +63,7 @@ export default function SettingsPinProtection({
 						onChange={(e) => onPinChange(e.target.value.replace(/\D/g, ''))}
 						placeholder={hasPin ? t('settings.pinPlaceholder') : t('settings.pinDisableHint')}
 						autoComplete={hasPin ? 'current-password' : 'new-password'}
-						className="w-full rounded-lg border border-auth-border bg-auth-elevated px-3 py-2 text-sm font-mono text-neutral-0 placeholder-neutral-600 outline-none focus:border-primary-500"
+						className="w-full rounded-lg border border-auth-border bg-auth-elevated px-3 py-2 text-sm font-mono text-[var(--color-text-primary)] placeholder:text-[var(--color-text-muted)] outline-none focus:border-primary-500"
 					/>
 				</div>
 				<button

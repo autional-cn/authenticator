@@ -60,7 +60,7 @@ export default function BottomNav() {
 							key={item.path}
 							onClick={() => navigate(target)}
 							className={`relative flex flex-col items-center gap-0.5 rounded-lg px-6 py-1 transition-colors ${
-								isActive ? 'text-primary-500' : 'text-neutral-500 hover:text-neutral-300'
+								isActive ? 'text-primary-500' : 'text-[var(--color-text-muted)] hover:text-[var(--color-text-secondary)]'
 							}`}
 						>
 							<Icon className="h-5 w-5" strokeWidth={isActive ? 2.5 : 2} />
