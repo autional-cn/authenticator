@@ -136,7 +136,7 @@ export default function TotpCard({
 							e.stopPropagation();
 							setShowDelete(!showDelete);
 						}}
-						className="rounded-md p-1.5 text-[var(--color-text-muted)] hover:bg-danger/10 hover:text-danger transition-colors"
+						className="rounded-md p-1.5 text-[var(--color-text-muted)] hover:bg-danger/10 hover:text-[var(--color-danger-text)] transition-colors"
 						aria-label={t('card.deleteAccount')}
 					>
 						<Trash2 className="h-3.5 w-3.5" />
@@ -156,7 +156,7 @@ export default function TotpCard({
 							{totp?.code ?? '------'}
 						</span>
 						<span className="rounded-md p-1.5 text-[var(--color-text-muted)] group-hover:bg-primary-500/10 group-hover:text-primary-400 transition-colors">
-							{copied ? <Check className="h-4 w-4 text-success" /> : <Copy className="h-4 w-4" />}
+							{copied ? <Check className="h-4 w-4 text-[var(--color-success-text)]" /> : <Copy className="h-4 w-4" />}
 						</span>
 					</button>
 					<CountdownRing progress={totp?.progress ?? 1} size={44} strokeWidth={3} />
@@ -178,7 +178,7 @@ export default function TotpCard({
 							</button>
 							<button
 								onClick={() => onDelete(account.id)}
-								className="rounded-lg bg-danger px-4 py-1.5 text-xs font-medium text-white hover:bg-danger/80 transition-colors"
+								className="rounded-lg bg-danger-soft px-4 py-1.5 text-xs font-medium text-[var(--color-danger-text)] transition-colors"
 							>
 								{t('common.delete')}
 							</button>

@@ -96,7 +96,7 @@ export default function ContextMenu({ items, children, disabled }: ContextMenuPr
 							}}
 							className={`flex w-full items-center gap-2 px-3 py-2 text-left text-xs transition-colors ${
 								item.danger
-									? 'text-danger hover:bg-danger/10'
+									? 'text-[var(--color-danger-text)] hover:bg-danger/10'
 									: 'text-[var(--color-text-primary)] hover:bg-auth-elevated'
 							}`}
 						>

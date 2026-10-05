@@ -15,8 +15,8 @@ export default function SettingsAccount({ onLogout }: { onLogout: () => void }) 
 					className="flex w-full items-center justify-between px-4 py-3 text-left hover:bg-auth-elevated/50 transition-colors"
 				>
 					<div className="flex items-center gap-3">
-						<LogOut className="h-4 w-4 text-danger" />
-						<span className="text-sm text-danger">{t('settings.logout')}</span>
+						<LogOut className="h-4 w-4 text-[var(--color-danger-text)]" />
+						<span className="text-sm text-[var(--color-danger-text)]">{t('settings.logout')}</span>
 					</div>
 				</button>
 			</div>

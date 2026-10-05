@@ -47,8 +47,8 @@ export default function SettingsDataManage({
 					/>
 				</label>
 			</div>
-			{importError && <p className="mt-2 text-xs text-danger">{importError}</p>}
-			{importSuccess && <p className="mt-2 text-xs text-success">{t('settings.importSuccess')}</p>}
+			{importError && <p className="mt-2 text-xs text-[var(--color-danger-text)]">{importError}</p>}
+			{importSuccess && <p className="mt-2 text-xs text-[var(--color-success-text)]">{t('settings.importSuccess')}</p>}
 		</section>
 	);
 }

@@ -24,7 +24,7 @@ export default function SettingsPinProtection({
 				<Lock className="h-4 w-4 text-[var(--color-text-secondary)]" />
 				<span className="text-sm text-[var(--color-text-primary)]">{t('settings.pin')}</span>
 				{hasPin && (
-					<span className="ml-auto rounded-full bg-success/10 px-2 py-0.5 text-[10px] font-medium text-success">
+					<span className="ml-auto rounded-full bg-success/10 px-2 py-0.5 text-[10px] font-medium text-[var(--color-success-text)]">
 						{t('settings.pinEnabled')}
 					</span>
 				)}
@@ -34,7 +34,7 @@ export default function SettingsPinProtection({
 			</p>
 			{pinMessage && (
 				<div
-					className={`mb-2 flex items-center gap-1.5 rounded-lg px-3 py-2 text-xs ${pinMessage.type === 'success' ? 'bg-success/10 text-success' : 'bg-danger/10 text-danger'}`}
+					className={`mb-2 flex items-center gap-1.5 rounded-lg px-3 py-2 text-xs ${pinMessage.type === 'success' ? 'bg-success/10 text-[var(--color-success-text)]' : 'bg-danger/10 text-[var(--color-danger-text)]'}`}
 				>
 					{pinMessage.type === 'success' ? (
 						<Check className="h-3.5 w-3.5 shrink-0" />

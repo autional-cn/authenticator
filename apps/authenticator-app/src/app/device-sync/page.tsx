@@ -93,14 +93,14 @@ export default function DeviceSyncPage() {
 
 			<div className="flex-1 space-y-4 px-4 py-4">
 				{displayError && (
-					<div className="flex items-center gap-2 rounded-lg bg-danger/10 px-3 py-2.5 text-sm text-danger">
+					<div className="flex items-center gap-2 rounded-lg bg-danger/10 px-3 py-2.5 text-sm text-[var(--color-danger-text)]">
 						<AlertCircle className="h-4 w-4 shrink-0" />
 						{displayError}
 					</div>
 				)}
 
 				{syncSuccess && (
-					<div className="flex items-center gap-2 rounded-lg bg-success/10 px-3 py-2.5 text-sm text-success">
+					<div className="flex items-center gap-2 rounded-lg bg-success/10 px-3 py-2.5 text-sm text-[var(--color-success-text)]">
 						<Check className="h-4 w-4 shrink-0" />
 						{t('deviceSync.success')}
 					</div>
@@ -158,7 +158,7 @@ export default function DeviceSyncPage() {
 												type="button"
 												onClick={() => handleRemove(device.id)}
 												aria-label={t('deviceSync.remove')}
-												className="rounded-lg p-1.5 text-[var(--color-text-muted)] transition-colors hover:text-danger"
+												className="rounded-lg p-1.5 text-[var(--color-text-muted)] transition-colors hover:text-[var(--color-danger-text)]"
 											>
 												<Trash2 className="h-4 w-4" />
 											</button>

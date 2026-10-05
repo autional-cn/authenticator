@@ -31,10 +31,10 @@ export default function SettingsSecurityScore({
 							<path
 								className={
 									securityScore >= 80
-										? 'text-success'
+										? 'text-[var(--color-success-text)]'
 										: securityScore >= 50
-											? 'text-warning'
-											: 'text-danger'
+											? 'text-[var(--color-warning-text)]'
+											: 'text-[var(--color-danger-text)]'
 								}
 								strokeDasharray={`${securityScore}, 100`}
 								d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831"

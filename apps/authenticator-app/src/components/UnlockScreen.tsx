@@ -76,7 +76,7 @@ function PinInputScreen() {
 					defaultValue=""
 				/>
 				{error && (
-					<div className="flex items-center gap-2 rounded-xl bg-danger/10 px-3 py-2.5 text-sm text-danger">
+					<div className="flex items-center gap-2 rounded-xl bg-danger/10 px-3 py-2.5 text-sm text-[var(--color-danger-text)]">
 						<AlertCircle className="h-4 w-4 shrink-0" />
 						{error}
 					</div>
@@ -201,7 +201,7 @@ export default function UnlockGate({ children }: { children: React.ReactNode }) 
 				className="flex h-screen flex-col items-center justify-center bg-auth-bg px-6 text-center"
 				role="alert"
 			>
-				<AlertCircle className="mb-4 h-10 w-10 text-danger" />
+				<AlertCircle className="mb-4 h-10 w-10 text-[var(--color-danger-text)]" />
 				<h2 className="mb-2 text-lg font-bold text-[var(--color-text-primary)]">{t('unlock.bootFailed')}</h2>
 				<p className="text-sm text-[var(--color-text-secondary)]">{bootError}</p>
 			</main>

@@ -170,7 +170,7 @@ export default function HomePage() {
 							</button>
 						)}
 					</div>
-					<span className="shrink-0 whitespace-nowrap rounded-full bg-primary-500/10 px-2 py-0.5 text-[10px] font-medium text-primary-400">
+					<span className="shrink-0 whitespace-nowrap rounded-full bg-primary-500/10 px-2 py-0.5 text-[10px] font-medium text-primary-600 dark:text-primary-400">
 						{t('home.accountsCount', { n: accounts.length })}
 					</span>
 					<button

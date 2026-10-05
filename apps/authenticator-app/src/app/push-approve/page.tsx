@@ -184,7 +184,7 @@ export default function PushApprovePage() {
 				)}
 
 				{error && (
-					<div className="mb-4 rounded-lg bg-red-50 dark:bg-danger/10 p-3 text-sm text-red-700 dark:text-danger">
+					<div className="mb-4 rounded-lg bg-red-50 dark:bg-danger/10 p-3 text-sm text-red-700 dark:text-[var(--color-danger-text)]">
 						{error}
 					</div>
 				)}

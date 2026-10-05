@@ -212,13 +212,13 @@ export default function AddAccountPage() {
 				{tab === 'manual' && (
 					<form onSubmit={handleSubmit} className="space-y-4">
 						{error && (
-							<div className="flex items-center gap-2 rounded-lg bg-danger/10 px-3 py-2.5 text-sm text-danger">
+							<div className="flex items-center gap-2 rounded-lg bg-danger/10 px-3 py-2.5 text-sm text-[var(--color-danger-text)]">
 								<AlertCircle className="h-4 w-4 shrink-0" />
 								{error}
 							</div>
 						)}
 						{success && (
-							<div className="flex items-center gap-2 rounded-lg bg-success/10 px-3 py-2.5 text-sm text-success">
+							<div className="flex items-center gap-2 rounded-lg bg-success/10 px-3 py-2.5 text-sm text-[var(--color-success-text)]">
 								<Check className="h-4 w-4 shrink-0" />
 								{t('add.accountAdded')}
 							</div>
@@ -228,7 +228,7 @@ export default function AddAccountPage() {
 								htmlFor="add-service-name"
 								className="mb-1.5 block text-xs font-medium text-[var(--color-text-secondary)]"
 							>
-								{t('add.serviceName')} <span className="text-danger">*</span>
+								{t('add.serviceName')} <span className="text-[var(--color-danger-text)]">*</span>
 							</label>
 							<input
 								id="add-service-name"
@@ -245,7 +245,7 @@ export default function AddAccountPage() {
 								htmlFor="add-username"
 								className="mb-1.5 block text-xs font-medium text-[var(--color-text-secondary)]"
 							>
-								{t('add.username')} <span className="text-danger">*</span>
+								{t('add.username')} <span className="text-[var(--color-danger-text)]">*</span>
 							</label>
 							<input
 								id="add-username"
@@ -262,7 +262,7 @@ export default function AddAccountPage() {
 								htmlFor="add-secret"
 								className="mb-1.5 block text-xs font-medium text-[var(--color-text-secondary)]"
 							>
-								{t('add.secret')} <span className="text-danger">*</span>
+								{t('add.secret')} <span className="text-[var(--color-danger-text)]">*</span>
 							</label>
 							<textarea
 								id="add-secret"
@@ -439,7 +439,7 @@ export default function AddAccountPage() {
 								</div>
 
 								{bindError && (
-									<div className="flex items-center gap-2 rounded-lg bg-danger/10 px-3 py-2.5 text-sm text-danger">
+									<div className="flex items-center gap-2 rounded-lg bg-danger/10 px-3 py-2.5 text-sm text-[var(--color-danger-text)]">
 										<AlertCircle className="h-4 w-4 shrink-0" />
 										{bindError}
 									</div>
@@ -493,7 +493,7 @@ export default function AddAccountPage() {
 
 								{bindBackupCodes.length > 0 && (
 									<div className="rounded-xl border border-warning/20 bg-warning/5 p-4">
-										<p className="text-xs font-medium text-warning">
+										<p className="text-xs font-medium text-[var(--color-warning-text)]">
 											{t('add.bindBackupCodesWarning')}
 										</p>
 										<div className="mt-2 grid grid-cols-2 gap-1.5">
@@ -528,7 +528,7 @@ export default function AddAccountPage() {
 								</div>
 
 								{bindError && (
-									<div className="flex items-center gap-2 rounded-lg bg-danger/10 px-3 py-2.5 text-sm text-danger">
+									<div className="flex items-center gap-2 rounded-lg bg-danger/10 px-3 py-2.5 text-sm text-[var(--color-danger-text)]">
 										<AlertCircle className="h-4 w-4 shrink-0" />
 										{bindError}
 									</div>

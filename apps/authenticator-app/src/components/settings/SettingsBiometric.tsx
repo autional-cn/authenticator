@@ -20,7 +20,7 @@ export default function SettingsBiometric({
 				<Fingerprint className="h-4 w-4 text-[var(--color-text-secondary)]" />
 				<span className="text-sm text-[var(--color-text-primary)]">{t('settings.biometric')}</span>
 				{bioRegistered && (
-					<span className="ml-auto rounded-full bg-success/10 px-2 py-0.5 text-[10px] font-medium text-success">
+					<span className="ml-auto rounded-full bg-success/10 px-2 py-0.5 text-[10px] font-medium text-[var(--color-success-text)]">
 						{t('settings.biometricEnabled')}
 					</span>
 				)}
@@ -32,7 +32,7 @@ export default function SettingsBiometric({
 				onClick={onToggle}
 				className={`rounded-lg px-3 py-1.5 text-xs font-medium transition-colors ${
 					bioRegistered
-						? 'border border-auth-border bg-auth-elevated text-[var(--color-text-secondary)] hover:text-danger'
+						? 'border border-auth-border bg-auth-elevated text-[var(--color-text-secondary)] hover:text-[var(--color-danger-text)]'
 						: 'bg-primary-600 text-white hover:bg-primary-500'
 				}`}
 			>

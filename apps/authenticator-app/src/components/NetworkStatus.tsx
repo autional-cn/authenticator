@@ -22,7 +22,7 @@ export default function NetworkStatus() {
 	if (isOnline) return null;
 
 	return (
-		<div className="flex items-center justify-center gap-1.5 bg-warning/10 px-3 py-1.5 text-xs text-warning">
+		<div className="flex items-center justify-center gap-1.5 bg-warning/10 px-3 py-1.5 text-xs text-[var(--color-warning-text)]">
 			<WifiOff className="h-3.5 w-3.5" />
 			<span>{t('home.offlineMode')}</span>
 		</div>

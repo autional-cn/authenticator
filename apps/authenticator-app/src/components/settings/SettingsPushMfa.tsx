@@ -24,7 +24,7 @@ export default function SettingsPushMfa({
 				)}
 				<span className="text-sm text-[var(--color-text-primary)]">{t('settings.pushApproval')}</span>
 				{pushEnabled && (
-					<span className="ml-auto rounded-full bg-success/10 px-2 py-0.5 text-[10px] font-medium text-success">
+					<span className="ml-auto rounded-full bg-success/10 px-2 py-0.5 text-[10px] font-medium text-[var(--color-success-text)]">
 						{t('settings.pushEnabled')}
 					</span>
 				)}
@@ -33,7 +33,7 @@ export default function SettingsPushMfa({
 				{pushEnabled ? t('settings.pushDescEnabled') : t('settings.pushDescDisabled')}
 			</p>
 			{pushError && (
-				<div className="mb-2 flex items-center gap-1.5 rounded-lg bg-danger/10 px-3 py-2 text-xs text-danger">
+				<div className="mb-2 flex items-center gap-1.5 rounded-lg bg-danger/10 px-3 py-2 text-xs text-[var(--color-danger-text)]">
 					<AlertCircle className="h-3.5 w-3.5 shrink-0" />
 					{pushError}
 				</div>
@@ -41,7 +41,7 @@ export default function SettingsPushMfa({
 			<button
 				onClick={onToggle}
 				disabled={pushLoading}
-				className={`w-full rounded-lg px-4 py-2 text-sm font-medium transition-colors disabled:opacity-50 ${pushEnabled ? 'border border-auth-border bg-auth-elevated text-[var(--color-text-primary)] hover:bg-danger/10 hover:text-danger' : 'bg-primary-600 text-white hover:bg-primary-500'}`}
+				className={`w-full rounded-lg px-4 py-2 text-sm font-medium transition-colors disabled:opacity-50 ${pushEnabled ? 'border border-auth-border bg-auth-elevated text-[var(--color-text-primary)] hover:bg-danger/10 hover:text-[var(--color-danger-text)]' : 'bg-primary-600 text-white hover:bg-primary-500'}`}
 			>
 				{pushLoading
 					? t('settings.pushProcessing')

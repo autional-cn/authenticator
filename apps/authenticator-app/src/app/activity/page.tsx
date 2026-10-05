@@ -84,11 +84,11 @@ export default function ActivityPage() {
 	const getStatusIcon = (status?: string) => {
 		switch (status) {
 			case 'approved':
-				return <ShieldCheck className="h-5 w-5 text-success" />;
+				return <ShieldCheck className="h-5 w-5 text-[var(--color-success-text)]" />;
 			case 'denied':
-				return <ShieldX className="h-5 w-5 text-danger" />;
+				return <ShieldX className="h-5 w-5 text-[var(--color-danger-text)]" />;
 			case 'pending':
-				return <Clock className="h-5 w-5 text-warning" />;
+				return <Clock className="h-5 w-5 text-[var(--color-warning-text)]" />;
 			case 'expired':
 				return <CalendarX className="h-5 w-5 text-[var(--color-text-muted)]" />;
 			default:

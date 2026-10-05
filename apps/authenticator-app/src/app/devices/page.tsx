@@ -97,7 +97,7 @@ export default function DevicesPage() {
 								<button
 									onClick={() => handleDelete(device.endpoint)}
 									disabled={deletingEndpoint === device.endpoint}
-									className="rounded-lg p-2 text-[var(--color-text-muted)] hover:bg-danger/10 hover:text-danger transition-colors disabled:opacity-50"
+									className="rounded-lg p-2 text-[var(--color-text-muted)] hover:bg-danger/10 hover:text-[var(--color-danger-text)] transition-colors disabled:opacity-50"
 									aria-label={t('devices.revokeTitle')}
 								>
 									<Trash2 className="h-4 w-4" />

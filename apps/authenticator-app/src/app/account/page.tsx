@@ -156,7 +156,7 @@ export default function AccountDetailPage() {
 								{totp?.code ?? '------'}
 							</span>
 							<span className="rounded-md p-1.5 text-[var(--color-text-muted)] group-hover:bg-primary-500/10 group-hover:text-primary-400 transition-colors">
-								{copied ? <Check className="h-4 w-4 text-success" /> : <Copy className="h-4 w-4" />}
+								{copied ? <Check className="h-4 w-4 text-[var(--color-success-text)]" /> : <Copy className="h-4 w-4" />}
 							</span>
 						</button>
 						<CountdownRing progress={totp?.progress ?? 1} size={48} strokeWidth={3} />
@@ -257,7 +257,7 @@ export default function AccountDetailPage() {
 						}}
 						className={`flex w-full items-center gap-2 rounded-lg px-3 py-2.5 text-sm font-medium transition-colors ${
 							account.pinned
-								? 'bg-warning/10 text-warning hover:bg-warning/20'
+								? 'bg-warning/10 text-[var(--color-warning-text)] hover:bg-warning/20'
 								: 'bg-auth-elevated text-[var(--color-text-secondary)] hover:text-[var(--color-text-primary)]'
 						}`}
 					>
@@ -313,21 +313,21 @@ export default function AccountDetailPage() {
 
 				{/* Delete */}
 				<div className="rounded-xl border border-danger/20 bg-danger/5 p-4">
-					<h3 className="text-sm font-semibold text-danger">{t('account.dangerZone')}</h3>
+					<h3 className="text-sm font-semibold text-[var(--color-danger-text)]">{t('account.dangerZone')}</h3>
 					<p className="mt-1 text-xs text-[var(--color-text-secondary)]">{t('account.deleteWarning')}</p>
 
 					{!showDelete ? (
 						<button
 							onClick={() => setShowDelete(true)}
-							className="mt-3 flex items-center gap-1.5 rounded-lg border border-danger/30 px-3 py-2 text-xs font-medium text-danger hover:bg-danger/10 transition-colors"
+							className="mt-3 flex items-center gap-1.5 rounded-lg border border-danger/30 px-3 py-2 text-xs font-medium text-[var(--color-danger-text)] hover:bg-danger/10 transition-colors"
 						>
 							<Trash2 className="h-3.5 w-3.5" />
 							{t('account.deleteButton')}
 						</button>
 					) : (
 						<div className="mt-3 flex flex-wrap items-center gap-2">
-							<AlertCircle className="h-4 w-4 text-danger" />
-							<span className="text-xs text-danger">{t('account.confirmDelete')}</span>
+							<AlertCircle className="h-4 w-4 text-[var(--color-danger-text)]" />
+							<span className="text-xs text-[var(--color-danger-text)]">{t('account.confirmDelete')}</span>
 							<button
 								onClick={() => setShowDelete(false)}
 								className="rounded-lg bg-auth-elevated px-3 py-1.5 text-xs text-[var(--color-text-secondary)] hover:text-[var(--color-text-primary)]"
@@ -336,7 +336,7 @@ export default function AccountDetailPage() {
 							</button>
 							<button
 								onClick={handleDelete}
-								className="rounded-lg bg-danger px-3 py-1.5 text-xs text-white hover:bg-danger/80"
+								className="rounded-lg bg-danger-soft px-3 py-1.5 text-xs text-[var(--color-danger-text)]"
 							>
 								{t('account.confirm')}
 							</button>

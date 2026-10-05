@@ -41,10 +41,10 @@ const TYPE_ICONS: Record<string, React.ComponentType<{ className?: string }>> = 
 };
 
 const TYPE_COLORS: Record<string, string> = {
-	security: 'text-warning',
-	warning: 'text-warning',
+	security: 'text-[var(--color-warning-text)]',
+	warning: 'text-[var(--color-warning-text)]',
 	system: 'text-primary-400',
-	email: 'text-info',
+	email: 'text-[var(--color-info-text)]',
 	info: 'text-[var(--color-text-secondary)]',
 };
 
@@ -219,7 +219,7 @@ export default function NotificationsPage() {
 				<h1 className="text-lg font-bold text-[var(--color-text-primary)]">{t('notifications.title')}</h1>
 				<div className="ml-auto flex items-center gap-2">
 					{unreadCount > 0 && (
-						<span className="rounded-full bg-danger px-2 py-0.5 text-[10px] font-medium text-white">
+						<span className="rounded-full bg-danger-soft px-2 py-0.5 text-[10px] font-medium text-[var(--color-danger-text)]">
 							{unreadCount}
 						</span>
 					)}

@@ -97,14 +97,14 @@ export default function CloudBackupPage() {
 
 			<div className="flex-1 space-y-4 px-4 py-4">
 				{displayError && (
-					<div className="flex items-center gap-2 rounded-lg bg-danger/10 px-3 py-2.5 text-sm text-danger">
+					<div className="flex items-center gap-2 rounded-lg bg-danger/10 px-3 py-2.5 text-sm text-[var(--color-danger-text)]">
 						<AlertCircle className="h-4 w-4 shrink-0" />
 						{displayError}
 					</div>
 				)}
 
 				{importSuccess && (
-					<div className="flex items-center gap-2 rounded-lg bg-success/10 px-3 py-2.5 text-sm text-success">
+					<div className="flex items-center gap-2 rounded-lg bg-success/10 px-3 py-2.5 text-sm text-[var(--color-success-text)]">
 						<Check className="h-4 w-4 shrink-0" />
 						{t('cloudBackup.restored')}
 					</div>

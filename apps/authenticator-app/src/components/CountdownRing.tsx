@@ -55,7 +55,7 @@ export default function CountdownRing({
 			</svg>
 			<span
 				className={`absolute text-[10px] font-mono font-bold ${
-					isUrgent ? 'text-danger' : 'text-[var(--color-text-secondary)]'
+					isUrgent ? 'text-[var(--color-danger-text)]' : 'text-[var(--color-text-secondary)]'
 				}`}
 			>
 				{Math.ceil(displayProgress * 30)}
