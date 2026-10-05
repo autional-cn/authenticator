@@ -159,3 +159,82 @@ describe('NotificationsPage', () => {
 		});
 	});
 });
+
+describe('NotificationsPage AU-13 分页（加载更多）', () => {
+	function mockTwoPages() {
+		// total=60 > PAGE_SIZE=50：page=1 时 hasMore=true，page=2 时 hasMore=false
+		mockNotifications.mockImplementation((params?: { page?: number }) => {
+			if (params?.page === 2) {
+				return Promise.resolve({
+					items: [
+						{ id: 'n2', title: '重复条目', isRead: true },
+						{ id: 'n3', title: '第二页条目', isRead: true },
+					],
+					total: 60,
+					pagination: { page: 2, pageSize: 50, total: 60, hasNext: false, hasPrev: true },
+				});
+			}
+			return Promise.resolve({
+				items: [
+					{ id: 'n1', title: '第一页条目', isRead: true },
+					{ id: 'n2', title: '重复条目', isRead: true },
+				],
+				total: 60,
+				pagination: { page: 1, pageSize: 50, total: 60, hasNext: true, hasPrev: false },
+			});
+		});
+	}
+
+	it('① 初始仅取 page=1，页尾显进度与「加载更多」', async () => {
+		mockTwoPages();
+		renderNotifications();
+
+		await waitFor(() => {
+			expect(screen.getByText('第一页条目')).toBeInTheDocument();
+		});
+		expect(mockNotifications).toHaveBeenCalledTimes(1);
+		expect(mockNotifications).toHaveBeenCalledWith({ page: 1, page_size: 50 });
+		expect(screen.getByText('已加载 2/60 条')).toBeInTheDocument();
+		expect(screen.getByText('加载更多')).toBeInTheDocument();
+		expect(screen.queryByText('没有更多了')).toBeNull();
+	});
+
+	it('② 点「加载更多」→ 取 page=2、追加渲染并按 id 去重、到底显「没有更多了」', async () => {
+		mockTwoPages();
+		renderNotifications();
+		await waitFor(() => {
+			expect(screen.getByText('第一页条目')).toBeInTheDocument();
+		});
+
+		await act(async () => {
+			fireEvent.click(screen.getByText('加载更多'));
+		});
+
+		expect(mockNotifications).toHaveBeenLastCalledWith({ page: 2, page_size: 50 });
+		expect(screen.getByText('第二页条目')).toBeInTheDocument();
+		expect(screen.getAllByText('重复条目')).toHaveLength(1);
+		expect(screen.getByText('已加载 3/60 条')).toBeInTheDocument();
+		expect(screen.queryByText('加载更多')).toBeNull();
+		expect(screen.getByText('没有更多了')).toBeInTheDocument();
+	});
+
+	it('⑤ 刷新重置回 page=1 并丢弃已追加页', async () => {
+		mockTwoPages();
+		renderNotifications();
+		await waitFor(() => {
+			expect(screen.getByText('第一页条目')).toBeInTheDocument();
+		});
+		await act(async () => {
+			fireEvent.click(screen.getByText('加载更多'));
+		});
+		expect(screen.getByText('第二页条目')).toBeInTheDocument();
+
+		await act(async () => {
+			fireEvent.click(screen.getByLabelText('刷新'));
+		});
+
+		expect(mockNotifications).toHaveBeenLastCalledWith({ page: 1, page_size: 50 });
+		expect(screen.queryByText('第二页条目')).toBeNull();
+		expect(screen.getByText('已加载 2/60 条')).toBeInTheDocument();
+	});
+});

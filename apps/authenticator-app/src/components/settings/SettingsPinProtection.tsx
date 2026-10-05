@@ -45,6 +45,16 @@ export default function SettingsPinProtection({
 				</div>
 			)}
 			<form onSubmit={onSave} className="flex gap-2">
+				{/* AU-17：密码类输入需同表单 username 语义（Chromium 可访问性启发式） */}
+				<input
+					type="text"
+					name="username"
+					autoComplete="username"
+					tabIndex={-1}
+					aria-hidden="true"
+					className="hidden"
+					defaultValue=""
+				/>
 				<div className="flex-1">
 					<label
 						htmlFor="settings-pin-input"

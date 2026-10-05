@@ -1,7 +1,8 @@
 {
   "name": "Autional 身份验证器",
   "short_name": "Autional 验证器",
-  "description": "基于 TOTP 与推送的两步验证器 —— Autional 身份验证器",
+  "description": "Autional 身份验证器 —— 基于 TOTP 与通行密钥的两步验证。",
+  "id": "/",
   "start_url": "./",
   "display": "standalone",
   "background_color": "#0a0a0a",

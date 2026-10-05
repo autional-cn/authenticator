@@ -13,10 +13,11 @@ import {
 	ExternalLink,
 } from 'lucide-react';
 import { LoadingScreen, ErrorState } from '@autional-cn/ui';
-import { useAuth } from '@autional-cn/shared';
-import { GeneratedApi } from '@autional-cn/shared';
+import { useAuth, GeneratedApi, toPageParams, fromPageResult } from '@autional-cn/shared';
 import BottomNav from '@/components/BottomNav';
 import { toSlugged, useTenantSlug } from '../../lib/slug';
+
+const PAGE_SIZE = 50;
 
 interface NotificationItem {
 	id: string;
@@ -56,31 +57,42 @@ export default function NotificationsPage() {
 	const [items, setItems] = useState<NotificationItem[]>([]);
 	const [loading, setLoading] = useState(true);
 	const [refreshing, setRefreshing] = useState(false);
+	const [loadingMore, setLoadingMore] = useState(false);
 	const [error, setError] = useState<string | null>(null);
 	const [unreadCount, setUnreadCount] = useState(0);
 	const [filter, setFilter] = useState<'all' | 'unread' | 'read'>('all');
 	const [markingAll, setMarkingAll] = useState(false);
+	const [page, setPage] = useState(1);
+	const [total, setTotal] = useState(0);
 
+	// AU-13：分页/形状读取走 shared 单点（toPageParams 出 snake 入参，fromPageResult 归一）
 	const fetchNotifications = useCallback(
-		async (silent = false) => {
+		async (targetPage: number, mode: 'replace' | 'append') => {
 			if (!userId) return;
-			if (!silent) setLoading(true);
 			setError(null);
 			try {
-				const res = (await GeneratedApi.notifications({
-					page: 1,
-					page_size: 50,
-				})) as { items?: NotificationItem[] };
-				setItems(res?.items || []);
+				const res = await GeneratedApi.notifications(
+					toPageParams({ page: targetPage, pageSize: PAGE_SIZE }),
+				);
+				const result = fromPageResult<NotificationItem>(res);
+				setItems((prev) => {
+					if (mode === 'replace') return result.items;
+					const seen = new Set(prev.map((i) => i.id));
+					return [...prev, ...result.items.filter((i) => !seen.has(i.id))];
+				});
+				setTotal(result.total);
+				setPage(targetPage);
 			} catch {
-				setError(t('notifications.loadFailed'));
-			} finally {
-				setLoading(false);
-				setRefreshing(false);
+				// 追加失败保留已加载列表（按钮仍在，可重试）；替换失败进错误态
+				if (mode === 'replace') setError(t('notifications.loadFailed'));
 			}
 		},
 		[userId, t],
 	);
+
+	const loadFirstPage = useCallback(async () => {
+		await fetchNotifications(1, 'replace');
+	}, [fetchNotifications]);
 
 	const fetchUnreadCount = useCallback(async () => {
 		if (!userId) return;
@@ -94,14 +106,28 @@ export default function NotificationsPage() {
 	}, [userId]);
 
 	useEffect(() => {
-		fetchNotifications();
+		setLoading(true);
+		loadFirstPage().finally(() => setLoading(false));
 		fetchUnreadCount();
-	}, [fetchNotifications, fetchUnreadCount]);
+	}, [loadFirstPage, fetchUnreadCount]);
 
+	// 刷新重置回第 1 页（替换而非追加）
 	const handleRefresh = () => {
 		setRefreshing(true);
-		fetchNotifications();
+		loadFirstPage().finally(() => setRefreshing(false));
 		fetchUnreadCount();
+	};
+
+	const hasMore = page * PAGE_SIZE < total;
+
+	const handleLoadMore = async () => {
+		if (loadingMore || !hasMore) return;
+		setLoadingMore(true);
+		try {
+			await fetchNotifications(page + 1, 'append');
+		} finally {
+			setLoadingMore(false);
+		}
 	};
 
 	const handleMarkRead = async (id: string) => {
@@ -242,7 +268,13 @@ export default function NotificationsPage() {
 				{loading ? (
 					<LoadingScreen />
 				) : error ? (
-					<ErrorState description={error} onRetry={() => fetchNotifications()} />
+					<ErrorState
+						description={error}
+						onRetry={() => {
+							setLoading(true);
+							loadFirstPage().finally(() => setLoading(false));
+						}}
+					/>
 				) : filtered.length === 0 ? (
 					<div className="py-12 text-center text-sm text-[var(--color-text-secondary)]">
 						{t(filter === 'unread' ? 'notifications.emptyUnread' : 'notifications.empty')}
@@ -303,6 +335,25 @@ export default function NotificationsPage() {
 								</div>
 							);
 						})}
+						{items.length > 0 && (
+							<div className="pt-2 text-center">
+								{/* AU-13：页尾常显进度，防静默截断自证 */}
+								<p className="text-[11px] text-[var(--color-text-muted)]">
+									{t('common.listProgress', { shown: items.length, total })}
+								</p>
+								{hasMore ? (
+									<button
+										onClick={handleLoadMore}
+										disabled={loadingMore}
+										className="mt-2 w-full rounded-lg border border-auth-border bg-auth-surface py-2 text-xs font-medium text-[var(--color-text-secondary)] transition-colors hover:bg-auth-elevated hover:text-[var(--color-text-primary)] disabled:opacity-50"
+									>
+										{loadingMore ? t('common.loadingMore') : t('common.loadMore')}
+									</button>
+								) : (
+									<p className="mt-2 text-[11px] text-[var(--color-text-muted)]">{t('common.noMore')}</p>
+								)}
+							</div>
+						)}
 					</div>
 				)}
 			</div>

@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect, useCallback, useRef } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Copy, Check, Trash2, ArrowUp, Pencil } from 'lucide-react';
 import { showToast } from '@autional-cn/ui';
@@ -31,6 +31,8 @@ export default function TotpCard({
 	const [totp, setTotp] = useState<TOTPResult | null>(null);
 	const [copied, setCopied] = useState(false);
 	const [showDelete, setShowDelete] = useState(false);
+	// AU-08：剪贴板 30s 清空定时器改为单定时器重臂（连点不堆叠），卸载时清理
+	const clearClipboardTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
 
 	const refresh = useCallback(async () => {
 		const result = await generateTOTP(
@@ -48,13 +50,22 @@ export default function TotpCard({
 		return () => clearInterval(interval);
 	}, [refresh]);
 
+	useEffect(() => {
+		return () => {
+			if (clearClipboardTimer.current) clearTimeout(clearClipboardTimer.current);
+		};
+	}, []);
+
 	const handleCopy = async () => {
 		if (!totp) return;
 		await navigator.clipboard.writeText(totp.code);
 		setCopied(true);
 		showToast(t('account.copied'), 'success');
 		setTimeout(() => setCopied(false), 2000);
-		setTimeout(() => {
+		// 语义 = 最后一次复制后 30s：先取消旧定时器再设新值
+		if (clearClipboardTimer.current) clearTimeout(clearClipboardTimer.current);
+		clearClipboardTimer.current = setTimeout(() => {
+			clearClipboardTimer.current = null;
 			navigator.clipboard.writeText('').catch(() => {});
 		}, 30000);
 	};

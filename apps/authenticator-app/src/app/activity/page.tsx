@@ -1,12 +1,14 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { useNavigate } from 'react-router';
 import { useTranslation } from 'react-i18next';
-import { ArrowLeft, ShieldCheck, ShieldX, Clock, AlertCircle } from 'lucide-react';
+import { ArrowLeft, ShieldCheck, ShieldX, Clock, AlertCircle, CalendarX } from 'lucide-react';
 import { LoadingScreen, ErrorState } from '@autional-cn/ui';
-import { GeneratedTypes } from '@autional-cn/shared';
+import { GeneratedTypes, toPageParams, fromPageResult } from '@autional-cn/shared';
 import { getPushHistory } from '@/lib/api';
 import BottomNav from '@/components/BottomNav';
 import { toSlugged, useTenantSlug } from '../../lib/slug';
+
+const PAGE_SIZE = 50;
 
 const STATUS_MAP: Record<string, { labelKey: string }> = {
 	approved: { labelKey: 'activity.approved' },
@@ -15,28 +17,69 @@ const STATUS_MAP: Record<string, { labelKey: string }> = {
 	expired: { labelKey: 'activity.expired' },
 };
 
+const FILTER_TABS = [
+	{ key: 'all', labelKey: 'activity.all' },
+	{ key: 'approved', labelKey: 'activity.approved' },
+	{ key: 'denied', labelKey: 'activity.denied' },
+	{ key: 'pending', labelKey: 'activity.pending' },
+	{ key: 'expired', labelKey: 'activity.expired' },
+];
+
 export default function ActivityPage() {
 	const navigate = useNavigate();
 	const slug = useTenantSlug();
 	const { t, i18n } = useTranslation();
 	const [items, setItems] = useState<GeneratedTypes.PushHistoryItem[]>([]);
 	const [loading, setLoading] = useState(true);
+	const [loadingMore, setLoadingMore] = useState(false);
 	const [error, setError] = useState<string | null>(null);
 	const [filter, setFilter] = useState<string>('all');
+	const [page, setPage] = useState(1);
+	const [total, setTotal] = useState(0);
+
+	// AU-23/24：tab 驱动服务端 status 过滤（all=不过滤）；分页/形状走 shared 单点
+	const fetchPage = useCallback(
+		async (targetPage: number, status: string, mode: 'replace' | 'append') => {
+			try {
+				const res = await getPushHistory({
+					...(status === 'all' ? {} : { status }),
+					...toPageParams({ page: targetPage, pageSize: PAGE_SIZE }),
+				});
+				const result = fromPageResult<GeneratedTypes.PushHistoryItem>(res);
+				setItems((prev) => {
+					if (mode === 'replace') return result.items;
+					const seen = new Set(prev.map((i) => i.challengeId));
+					return [...prev, ...result.items.filter((i) => !seen.has(i.challengeId))];
+				});
+				setTotal(result.total);
+				setPage(targetPage);
+			} catch (err) {
+				// 追加失败保留已加载列表（按钮仍在，可重试）；替换失败进错误态
+				if (mode === 'replace') setError(t('activity.loadFailed'));
+				console.error(err);
+			}
+		},
+		[t],
+	);
 
 	useEffect(() => {
-		getPushHistory({ page: 1, page_size: 50 })
-			.then((res) => {
-				setItems(res?.items ?? []);
-			})
-			.catch((err) => {
-				setError(t('activity.loadFailed'));
-				console.error(err);
-			})
-			.finally(() => setLoading(false));
-	}, [t]);
+		// 切 tab 重置回第 1 页并以新 status 重取
+		setLoading(true);
+		setError(null);
+		fetchPage(1, filter, 'replace').finally(() => setLoading(false));
+	}, [filter, fetchPage]);
 
-	const filtered = filter === 'all' ? items : items.filter((i) => i.status === filter);
+	const hasMore = page * PAGE_SIZE < total;
+
+	const handleLoadMore = async () => {
+		if (loadingMore || !hasMore) return;
+		setLoadingMore(true);
+		try {
+			await fetchPage(page + 1, filter, 'append');
+		} finally {
+			setLoadingMore(false);
+		}
+	};
 
 	const getStatusIcon = (status?: string) => {
 		switch (status) {
@@ -46,6 +89,8 @@ export default function ActivityPage() {
 				return <ShieldX className="h-5 w-5 text-danger" />;
 			case 'pending':
 				return <Clock className="h-5 w-5 text-warning" />;
+			case 'expired':
+				return <CalendarX className="h-5 w-5 text-[var(--color-text-muted)]" />;
 			default:
 				return <AlertCircle className="h-5 w-5 text-[var(--color-text-secondary)]" />;
 		}
@@ -85,12 +130,7 @@ export default function ActivityPage() {
 
 			{/* Filter Tabs */}
 			<div className="flex gap-1.5 overflow-x-auto border-b border-auth-border px-4 py-2 scrollbar-hide">
-				{[
-					{ key: 'all', labelKey: 'activity.all' },
-					{ key: 'approved', labelKey: 'activity.approved' },
-					{ key: 'denied', labelKey: 'activity.denied' },
-					{ key: 'pending', labelKey: 'activity.pending' },
-				].map((f) => (
+				{FILTER_TABS.map((f) => (
 					<button
 						key={f.key}
 						onClick={() => setFilter(f.key)}
@@ -110,11 +150,11 @@ export default function ActivityPage() {
 					<LoadingScreen />
 				) : error ? (
 					<ErrorState description={error} />
-				) : filtered.length === 0 ? (
+				) : items.length === 0 ? (
 					<div className="py-12 text-center text-sm text-[var(--color-text-secondary)]">{t('activity.empty')}</div>
 				) : (
 					<div className="space-y-2">
-						{filtered.map((item) => (
+						{items.map((item) => (
 							<div
 								key={item.challengeId}
 								className="flex items-start gap-3 rounded-xl border border-auth-border bg-auth-surface p-3"
@@ -135,6 +175,25 @@ export default function ActivityPage() {
 								</div>
 							</div>
 						))}
+						{items.length > 0 && (
+							<div className="pt-2 text-center">
+								{/* AU-24：页尾常显进度，防静默截断自证 */}
+								<p className="text-[11px] text-[var(--color-text-muted)]">
+									{t('common.listProgress', { shown: items.length, total })}
+								</p>
+								{hasMore ? (
+									<button
+										onClick={handleLoadMore}
+										disabled={loadingMore}
+										className="mt-2 w-full rounded-lg border border-auth-border bg-auth-surface py-2 text-xs font-medium text-[var(--color-text-secondary)] transition-colors hover:bg-auth-elevated hover:text-[var(--color-text-primary)] disabled:opacity-50"
+									>
+										{loadingMore ? t('common.loadingMore') : t('common.loadMore')}
+									</button>
+								) : (
+									<p className="mt-2 text-[11px] text-[var(--color-text-muted)]">{t('common.noMore')}</p>
+								)}
+							</div>
+						)}
 					</div>
 				)}
 			</div>

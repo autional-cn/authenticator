@@ -65,6 +65,16 @@ function PinInputScreen() {
 				className="w-full max-w-xs space-y-4"
 				aria-label={t('unlock.pinUnlockAria')}
 			>
+				{/* AU-17：密码类输入需同表单 username 语义（Chromium 可访问性启发式） */}
+				<input
+					type="text"
+					name="username"
+					autoComplete="username"
+					tabIndex={-1}
+					aria-hidden="true"
+					className="hidden"
+					defaultValue=""
+				/>
 				{error && (
 					<div className="flex items-center gap-2 rounded-xl bg-danger/10 px-3 py-2.5 text-sm text-danger">
 						<AlertCircle className="h-4 w-4 shrink-0" />
@@ -74,6 +84,8 @@ function PinInputScreen() {
 				<div className="relative">
 					<Lock className="absolute left-3.5 top-1/2 h-4 w-4 -translate-y-1/2 text-[var(--color-text-muted)]" />
 					<input
+						id="unlock-pin-input"
+						name="pin"
 						type="password"
 						inputMode="numeric"
 						pattern="[0-9]*"

@@ -1,4 +1,4 @@
-import { describe, it, expect, vi, beforeEach } from 'vitest';
+import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 import { render, screen, fireEvent, act } from '@testing-library/react';
 import type { TotpAccount } from '@/lib/store';
 
@@ -97,5 +97,72 @@ describe('TotpCard (AU-03 / AU-16①)', () => {
 		renderCard();
 		await screen.findByText('123456');
 		expect(screen.getByLabelText('删除账户')).toBeInTheDocument();
+	});
+});
+
+describe('TotpCard AU-08 剪贴板 30s 清空定时器（重臂 + 卸载清理）', () => {
+	beforeEach(() => {
+		vi.useFakeTimers();
+	});
+
+	afterEach(() => {
+		vi.useRealTimers();
+	});
+
+	const writeTextMock = () => navigator.clipboard.writeText as unknown as ReturnType<typeof vi.fn>;
+	const emptyWrites = () => writeTextMock().mock.calls.filter((call) => call[0] === '').length;
+
+	async function renderAndCopy() {
+		renderCard();
+		await act(async () => {});
+		await act(async () => {
+			fireEvent.click(screen.getByText('123456'));
+		});
+	}
+
+	it('复制后 30s 恰 1 次空写入（正常清空）', async () => {
+		await renderAndCopy();
+		expect(writeTextMock()).toHaveBeenCalledWith('123456');
+		expect(emptyWrites()).toBe(0);
+
+		await act(async () => {
+			await vi.advanceTimersByTimeAsync(30000);
+		});
+		expect(emptyWrites()).toBe(1);
+	});
+
+	it('连点重臂：t=20s 再复制 → t=30s 无空写入、t=50s 恰 1 次', async () => {
+		await renderAndCopy();
+
+		await act(async () => {
+			await vi.advanceTimersByTimeAsync(20000);
+		});
+		await act(async () => {
+			fireEvent.click(screen.getByText('123456'));
+		});
+
+		await act(async () => {
+			await vi.advanceTimersByTimeAsync(10000); // t=30s：旧定时器已被取消
+		});
+		expect(emptyWrites()).toBe(0);
+
+		await act(async () => {
+			await vi.advanceTimersByTimeAsync(20000); // t=50s：第二次复制后 30s
+		});
+		expect(emptyWrites()).toBe(1);
+	});
+
+	it('卸载后推进计时 → 无空写入（清理生效）', async () => {
+		const view = render(<TotpCard account={account} onDelete={vi.fn()} onEdit={vi.fn()} onPin={vi.fn()} />);
+		await act(async () => {});
+		await act(async () => {
+			fireEvent.click(screen.getByText('123456'));
+		});
+
+		view.unmount();
+		await act(async () => {
+			await vi.advanceTimersByTimeAsync(30000);
+		});
+		expect(emptyWrites()).toBe(0);
 	});
 });
