@@ -197,7 +197,7 @@ export default function AddAccountPage() {
 						onClick={() => setTab(tabItem.key)}
 						className={`flex flex-1 items-center justify-center gap-1 rounded-lg py-2 text-xs font-medium transition-all ${
 							tab === tabItem.key
-								? 'bg-primary-600 text-white shadow-sm'
+								? 'bg-primary-600 text-white shadow-card'
 								: 'text-[var(--color-text-secondary)] hover:text-[var(--color-text-primary)]'
 						}`}
 					>

@@ -97,7 +97,7 @@ export default function PushApprovePage() {
 	if (error && !challenge) {
 		return (
 			<div className="flex min-h-screen items-center justify-center bg-gray-50 dark:bg-auth-bg p-4">
-				<div className="w-full max-w-sm rounded-xl bg-white dark:bg-auth-surface p-6 shadow-lg">
+				<div className="w-full max-w-sm rounded-xl bg-white dark:bg-auth-surface p-6 shadow-card">
 					<div className="mb-4 flex justify-center">
 						<AlertTriangle className="h-12 w-12 text-red-500" />
 					</div>
@@ -131,7 +131,7 @@ export default function PushApprovePage() {
 		const isApproved = result === 'approved';
 		return (
 			<div className="flex min-h-screen items-center justify-center bg-gray-50 dark:bg-auth-bg p-4">
-				<div className="w-full max-w-sm rounded-xl bg-white dark:bg-auth-surface p-6 shadow-lg">
+				<div className="w-full max-w-sm rounded-xl bg-white dark:bg-auth-surface p-6 shadow-card">
 					<div className="mb-4 flex justify-center">
 						{isApproved ? (
 							<ShieldCheck className="h-16 w-16 text-green-500" />
@@ -152,7 +152,7 @@ export default function PushApprovePage() {
 
 	return (
 		<div className="flex min-h-screen items-center justify-center bg-gray-50 dark:bg-auth-bg p-4">
-			<div className="w-full max-w-sm rounded-xl bg-white dark:bg-auth-surface p-6 shadow-lg">
+			<div className="w-full max-w-sm rounded-xl bg-white dark:bg-auth-surface p-6 shadow-card">
 				<div className="mb-4 flex justify-center">
 					<div className="flex h-16 w-16 items-center justify-center rounded-full bg-blue-100 dark:bg-primary-500/10">
 						<ShieldCheck className="h-8 w-8 text-blue-600 dark:text-primary-400" />

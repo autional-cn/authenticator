@@ -278,7 +278,7 @@ export default function HomePage() {
 			{batchMode && selectedIds.size > 0 && (
 				<button
 					onClick={handleBatchCopy}
-					className="fixed bottom-20 left-1/2 z-50 -translate-x-1/2 flex items-center gap-2 rounded-full bg-primary-600 px-5 py-3 text-sm font-medium text-white shadow-lg shadow-primary-600/25 transition-transform active:scale-95"
+					className="fixed bottom-20 left-1/2 z-50 -translate-x-1/2 flex items-center gap-2 rounded-full bg-primary-600 px-5 py-3 text-sm font-medium text-white shadow-brand shadow-primary-600/25 transition-transform active:scale-95"
 				>
 					<Copy className="h-4 w-4" />
 					{t('home.batchCopy', { n: selectedIds.size })}
