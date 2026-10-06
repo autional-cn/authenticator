@@ -396,7 +396,7 @@ export default function AddAccountPage() {
 								className="space-y-4"
 							>
 								<div className="flex flex-col items-center rounded-xl border border-auth-border bg-auth-surface p-6 text-center">
-									<div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-primary-500/10 mb-3">
+									<div className="flex h-14 w-14 items-center justify-center rounded-md bg-primary-500/10 mb-3">
 										<Shield className="h-7 w-7 text-primary-500" />
 									</div>
 									<h2 className="text-base font-semibold text-[var(--color-text-primary)]">{t('add.bindTitle')}</h2>
