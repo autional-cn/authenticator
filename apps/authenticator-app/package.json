@@ -16,9 +16,9 @@
   },
   "dependencies": {
     "@autional/shared": "0.1.0-rc.33",
-    "@autional/tailwind-preset": "0.1.0-rc.6",
-    "@autional/tokens": "0.1.0-rc.12",
-    "@autional/ui": "0.1.0-rc.43",
+    "@autional/tailwind-preset": "0.1.0-rc.7",
+    "@autional/tokens": "0.1.0-rc.13",
+    "@autional/ui": "0.1.0-rc.44",
     "@tanstack/react-query": "5.100.9",
     "html5-qrcode": "2.3.8",
     "i18next": "26.0.10",
