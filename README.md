@@ -1,3 +1,5 @@
+> **本仓库已归档**（只读）：源码与后续开发已迁移至 [github.com/autional/authenticator](https://github.com/autional/authenticator)；线上服务见 [authenticator.autional.cn](https://authenticator.autional.cn)。
+
 # Autional 身份验证器
 
 **域名**：[authenticator.autional.cn](https://authenticator.autional.cn)
